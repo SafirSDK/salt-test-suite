@@ -28,8 +28,8 @@ def communication_test_cmd():
             "-w", str(node_count-1),
             "--nsend", str(message_count),
             "--nrecv", "0",
-            "--size", "30000",
-            "--thread-count", "10"]
+            "--size", "1000",
+            "--thread-count", "2"]
   else:
     return ["communication_test",
             "-a", ip_address(my_name)+":10000",
@@ -38,8 +38,8 @@ def communication_test_cmd():
             "-w", str(node_count-1),
             "--nsend", "0",
             "--nrecv", str(message_count),
-            "--size", "30000",
-            "--thread-count", "10"]
+            "--size", "1000",
+            "--thread-count", "2"]
   
 def linux_main():
   try:
