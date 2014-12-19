@@ -9,10 +9,11 @@ import salt.utils.event
 #-----------------------------------------------------
 class CommandLine:
   def __init__(self):
-    opts, args = getopt.getopt(sys.argv[1:], "sh:", ["sync-only", "clear-only", "help"])
+    opts, args = getopt.getopt(sys.argv[1:], "sh:", ["sync-only", "clear-only", "get-logs", "help"])
     self.sync_safir=False
     self.clear_only=False
     self.sync_only=False
+    self.get_logs=False
     self.minion_command="*"
     for k, v in opts:
       if k=="-s":
@@ -21,12 +22,15 @@ class CommandLine:
         self.sync_only=True
       elif k=="--clear-only":
         self.clear_only=True
+      elif k=="--get-logs":
+        self.get_logs=True
       else:
         print("usage:")
         print("  run tests without update safir: master_test_executor")
         print("  update safir and run tests:     master_test_executor -s")
         print("  clear old files, dont run test: master_test_executor --clear-only")
         print("  sync safir, dont run test:      master_test_executor --sync-only")
+        print("  get log files:      master_test_executor --get-logs")
         sys.exit(1)
 
     if len(args)>0:
@@ -97,6 +101,57 @@ class Executor:
     if os.path.exists("/home/safir/runtime.zip"):
       os.remove("/home/safir/runtime.zip")
       
+  def get_logs(self):
+    print("Get logs")
+    #create zip file of all logs since our version of salt cant push directories
+    self.client.cmd("G@os:Ubuntu and "+self.cmd.minion_command,
+                    "cmd.run",
+                    ["zip -qr log.zip ./safir/runtime/log/"],
+                    expr_form="compound")
+    self.client.cmd("G@os:Windows and "+self.cmd.minion_command,
+                    "cmd.run",
+                    ['"c:\\Program Files\\7-Zip\\7z" a c:\\Users\\safir\\log.zip -r c:\\Users\\safir\\safir\\runtime\\log'],
+                    expr_form="compound")
+    #copy zip file to master
+    self.client.cmd("G@os:Ubuntu and "+self.cmd.minion_command,
+                    "cp.push",
+                    ["/home/safir/log.zip"],
+                    expr_form="compound")
+    self.client.cmd("G@os:Windows and "+self.cmd.minion_command,
+                    "cp.push",
+                    ["c:\\Users\\safir\\log.zip"],
+                    expr_form="compound")
+    
+    log_dir="/home/safir/log"
+    if not os.path.exists(log_dir):
+      os.makedirs(log_dir)
+        
+    for m in self.minions:
+      minion_log_dir=os.path.join(log_dir, m)
+      if not os.path.exists(minion_log_dir):
+        os.makedirs(minion_log_dir)
+        
+      file_found=False
+      src_dir=os.path.join("/var/cache/salt/master/minions", m)
+      for root, folders, files in os.walk(src_dir):
+        for f in files:
+          if f.endswith("log.zip"):
+            src_file=os.path.join(root, f)
+            dst_file=os.path.join(minion_log_dir, "log.zip")
+            shutil.copyfile(src_file, dst_file)
+            os.remove(src_file)
+            file_found=True
+      if file_found:
+        #unzip the file        
+        subprocess.call(["unzip", "-o", dst_file, "-d", minion_log_dir])
+        os.remove(dst_file)
+        print(m+" - logs collected")
+      else:
+        print(m+" - no logs found")
+                    
+    print(" -get logs finished")
+                    
+    
   def sync_safir(self):
     print("Get latest SAFIR")
     
@@ -189,6 +244,10 @@ class Executor:
 
     
   def run(self):
+    if self.cmd.get_logs:
+      self.get_logs()
+      return
+  
     self.clear()
     
     if self.cmd.clear_only:
