@@ -9,12 +9,14 @@ import salt.utils.event
 #-----------------------------------------------------
 class CommandLine:
   def __init__(self):
-    opts, args = getopt.getopt(sys.argv[1:], "sh:", ["sync-only", "clear-only", "get-logs", "help"])
+    opts, args = getopt.getopt(sys.argv[1:], "sh:", ["test-script=", "sync-only", "clear-only", "get-logs", "help"])
     self.sync_safir=False
     self.clear_only=False
     self.sync_only=False
     self.get_logs=False
     self.minion_command="*"
+    self.test_script_path=None
+    self.test_script=None
     for k, v in opts:
       if k=="-s":
         self.sync_safir=True
@@ -24,10 +26,14 @@ class CommandLine:
         self.clear_only=True
       elif k=="--get-logs":
         self.get_logs=True
+      elif k=="--test-scsript":
+        self.test_script_path=v
+        self.test_script=os.path.basename(v)
+
       else:
         print("usage:")
-        print("  run tests without update safir: master_test_executor")
-        print("  update safir and run tests:     master_test_executor -s")
+        print("  run test script kalle.py without update safir: master_test_executor --test-script kalle.py")
+        print("  update safir and run test script kally.py:     master_test_executor -s --test-script kalle.py")
         print("  clear old files, dont run test: master_test_executor --clear-only")
         print("  sync safir, dont run test:      master_test_executor --sync-only")
         print("  get log files:      master_test_executor --get-logs")
@@ -84,9 +90,9 @@ class Executor:
       print("'"+x+"'")      
 
   def clear(self):
-    print("Remove old test.py from minion")
-    self.client.cmd("os:Ubuntu", "cmd.run", ["rm -f /home/safir/test.py"], expr_form="grain")
-    self.client.cmd("os:Windows", "cmd.run", ["del c:\\Users\\safir\\test.py"], expr_form="grain")
+    print("Remove old test script from minion")
+    self.client.cmd("os:Ubuntu", "cmd.run", ["rm -f /home/safir/"+self.cmd.test_script], expr_form="grain")
+    self.client.cmd("os:Windows", "cmd.run", ["del c:\\Users\\safir\\"+self.cmd.test_script], expr_form="grain")
     
     print("Remove old result.txt from minion")    
     self.client.cmd("os:Ubuntu", "cmd.run", ["rm -f /home/safir/result.txt"], expr_form="grain")
@@ -188,27 +194,27 @@ class Executor:
     print(" -sync Safir finished")
         
   def upload_test(self):
-    print("Upload new test.py to minion")
+    print("Upload new test script to minion")
     self.client.cmd("os:Ubuntu", "cp.get_file",
-                    ["salt://tests/test.py", "/home/safir/test.py"],
+                    ["salt://"+self.cmd.test_script_path, "/home/safir/"+self.cmd.test_script],
                     expr_form="grain")
     self.client.cmd("os:Windows", "cp.get_file",
-                    ["salt://tests/test.py", "c:/Users/safir/test.py"],
+                    ["salt://"+self.cmd.test_script_path, "c:/Users/safir/"+self.cmd.test_script],
                     expr_form="grain")
         
   def run_test(self):
-    print("Run test.py on minion")
+    print("Run test script on minion")
 
     node_count=str(len(self.minions))
     
     self.client.cmd_async("G@os:Ubuntu and "+self.cmd.minion_command,
                     "cmd.run",
-                    ["python /home/safir/test.py --node-count "+node_count],
+                    ["python /home/safir/"+self.cmd.test_script+" --node-count "+node_count],
                     expr_form="compound")    
     
     self.client.cmd_async("G@os:Windows and "+self.cmd.minion_command,
                     "cmd.run",
-                    ["python c:\\Users\\safir\\test.py --node-count "+node_count],
+                    ["python c:\\Users\\safir\\"+self.cmd.test_script+" --node-count "+node_count],
                     expr_form="compound")
 
   def collect_result(self):
