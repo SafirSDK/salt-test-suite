@@ -26,7 +26,7 @@ class CommandLine:
         self.clear_only=True
       elif k=="--get-logs":
         self.get_logs=True
-      elif k=="--test-scsript":
+      elif k=="--test-script":
         self.test_script_path=v
         self.test_script=os.path.basename(v)
 
