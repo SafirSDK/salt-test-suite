@@ -21,12 +21,14 @@ def safir_control_cmd():
   if my_name==seed_minion:
     return ["safir_control",
             "--control-address", ip_address(my_name)+":33000",
-            "--data-address", ip_address(my_name)+":44000"]
+            "--data-address", ip_address(my_name)+":44000",
+            "--name", my_name]
   else:
       return ["safir_control",
               "--control-address", ip_address(my_name)+":33000",
               "--data-address", ip_address(my_name)+":44000",
-              "--seed", ip_address(seed_minion)+":33000"]
+              "--seed", ip_address(seed_minion)+":33000",
+              "--name", my_name]
   
 def linux_main():
   try:
