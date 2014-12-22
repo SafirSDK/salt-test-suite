@@ -76,7 +76,7 @@ def main():
 
   # Run the process for a while then kill it
   time.sleep(30)
-  proc.kill()
+  proc.terminate()
   proc.communicate()
 
   #signal that we are done
