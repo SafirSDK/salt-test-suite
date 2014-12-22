@@ -82,7 +82,7 @@ def main():
   proc.communicate()
 
   #signal that we are done
-  subprocess.call(["salt-call", "event.fire_master", gethostname(), "control_test"])
+  subprocess.call(["salt-call", "event.fire_master", gethostname(), "safir_test"])
    
 #------------------------------------------------
 # If this is the main module, start the program

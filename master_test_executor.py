@@ -47,9 +47,9 @@ class CommandLine:
 # EventHandler - handle when minions are ready
 #-----------------------------------------------------
 class EventHandler(threading.Thread):
-  def __init__(self, event_tag, num_minions):
+  def __init__(self, num_minions):
     threading.Thread.__init__(self)
-    self.event_tag=event_tag
+    self.event_tag="safir_test"
     self.received=False
     self.num_minions=num_minions
 
@@ -265,7 +265,7 @@ class Executor:
       return
   
     #Start a thread that handles the event when minion has finished the test case
-    event_handler=EventHandler("com_test", len(self.minions))
+    event_handler=EventHandler(len(self.minions))
     event_handler.start()
     
     if self.cmd.sync_safir:
