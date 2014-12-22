@@ -36,7 +36,8 @@ def linux_main():
     set_env("LD_LIBRARY_PATH", "/home/safir/safir/runtime/lib")
     set_env("SAFIR_RUNTIME", "/home/safir/safir/runtime")
     
-    subprocess.call(safir_control_cmd(), stdout=f, stderr=f)
+    return subprocess.Popen(safir_control_cmd(), stdout=f, stderr=f)
+
   except getopt.GetoptError as err:
     f.write(err)
   except:
@@ -50,7 +51,8 @@ def windows_main():
     f=open("c:\\Users\\safir\\result.txt", "w")    
     set_env("PATH", "c:\\Users\\safir\\safir\\runtime\\bin")
     set_env("SAFIR_RUNTIME", "c:\\Users\\safir\\safir\\runtime")
-    subprocess.call(safir_control_cmd(), stdout=f, stderr=f, shell=True)
+
+    return subprocess.call(safir_control_cmd(), stdout=f, stderr=f, shell=True)
   except getopt.GetoptError as err:
     f.write(err)
   except:
@@ -67,9 +69,15 @@ def main():
       node_count=int(a)
   
   if sys.platform.lower().startswith('linux'):
-    linux_main()
+    proc = linux_main()
+
   elif sys.platform.lower().startswith('win'):
-    windows_main()
+    proc = windows_main()
+
+  # Run the process for a while then kill it
+  time.sleep(30)
+  proc.kill()
+  proc.communicate()
 
   #signal that we are done
   subprocess.call(["salt-call", "event.fire_master", gethostname(), "control_test"])
