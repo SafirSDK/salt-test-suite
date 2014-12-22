@@ -69,6 +69,7 @@ class Executor:
   def __init__(self):
     #Parse command line
     self.cmd=CommandLine()
+    
     self.client=salt.client.LocalClient()
     
     #find out which minions are alive
@@ -196,10 +197,10 @@ class Executor:
   def upload_test(self):
     print("Upload new test script to minion")
     self.client.cmd("os:Ubuntu", "cp.get_file",
-                    ["salt://"+self.cmd.test_script_path, "/home/safir/"+self.cmd.test_script],
+                    ["salt://salt-test-suite/"+self.cmd.test_script_path, "/home/safir/"+self.cmd.test_script],
                     expr_form="grain")
     self.client.cmd("os:Windows", "cp.get_file",
-                    ["salt://"+self.cmd.test_script_path, "c:/Users/safir/"+self.cmd.test_script],
+                    ["salt://salt-test-suite/"+self.cmd.test_script_path, "c:/Users/safir/"+self.cmd.test_script],
                     expr_form="grain")
         
   def run_test(self):
