@@ -91,9 +91,10 @@ class Executor:
       print("'"+x+"'")      
 
   def clear(self):
-    print("Remove old test script from minion")
-    self.client.cmd("os:Ubuntu", "cmd.run", ["rm -f /home/safir/"+self.cmd.test_script], expr_form="grain")
-    self.client.cmd("os:Windows", "cmd.run", ["del c:\\Users\\safir\\"+self.cmd.test_script], expr_form="grain")
+    if self.cmd.test_script is not None:
+      print("Remove old test script from minion")
+      self.client.cmd("os:Ubuntu", "cmd.run", ["rm -f /home/safir/"+self.cmd.test_script], expr_form="grain")
+      self.client.cmd("os:Windows", "cmd.run", ["del c:\\Users\\safir\\"+self.cmd.test_script], expr_form="grain")
     
     print("Remove old result.txt from minion")    
     self.client.cmd("os:Ubuntu", "cmd.run", ["rm -f /home/safir/result.txt"], expr_form="grain")
@@ -255,15 +256,18 @@ class Executor:
       self.get_logs()
       return
   
-    self.clear()
-    
     if self.cmd.clear_only:
+      self.clear()
       return
       
     if self.cmd.sync_only:
+      self.clear()
       self.sync_safir()
       return
   
+    #Run the test script, start clearing old scripts and results
+    self.clear()
+    
     #Start a thread that handles the event when minion has finished the test case
     event_handler=EventHandler(len(self.minions))
     event_handler.start()
