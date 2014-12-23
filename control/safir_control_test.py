@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os, subprocess, sys, getopt, time
+import os, subprocess, sys, getopt, time, signal
 from socket import gethostname
 
 seed_minion = "minion00"
@@ -50,11 +50,11 @@ def linux_main():
 
 def windows_main():
   try:
-    f=open("c:\\Users\\safir\\result.txt", "w")    
+    f=open("c:\\Users\\safir\\result.txt", "w")
     set_env("PATH", "c:\\Users\\safir\\safir\\runtime\\bin")
     set_env("SAFIR_RUNTIME", "c:\\Users\\safir\\safir\\runtime")
 
-    return subprocess.call(safir_control_cmd(), stdout=f, stderr=f, shell=True)
+    return subprocess.Popen(safir_control_cmd(), stdout=f, stderr=f, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
   except getopt.GetoptError as err:
     f.write(err)
   except:
@@ -77,8 +77,13 @@ def main():
     proc = windows_main()
 
   # Run the process for a while then kill it
-  time.sleep(30)
-  proc.terminate()
+  time.sleep(45)
+  
+  if sys.platform.lower().startswith('linux'):
+    proc.terminate()
+  elif sys.platform.lower().startswith('win'):
+    proc.send_signal(signal.CTRL_BREAK_EVENT) 
+    
   proc.communicate()
 
   #signal that we are done
