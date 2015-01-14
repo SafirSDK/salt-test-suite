@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os, subprocess, sys, getopt, threading, time, shutil, urllib
+import os, subprocess, sys, getopt, threading, time, shutil, urllib, glob
 import salt.client
 import salt.utils.event
 
@@ -9,19 +9,16 @@ import salt.utils.event
 #-----------------------------------------------------
 class CommandLine:
   def __init__(self):
-    opts, args = getopt.getopt(sys.argv[1:], "sh:", ["test-script=", "sync-only", "clear-only", "get-logs", "help"])
-    self.sync_safir=False
+    opts, args = getopt.getopt(sys.argv[1:], "h:", ["test-script=", "safir-update", "clear-only", "get-logs", "help"])
+    self.update=False
     self.clear_only=False
-    self.sync_only=False
     self.get_logs=False
     self.minion_command="*"
     self.test_script_path=None
     self.test_script=None
     for k, v in opts:
-      if k=="-s":
-        self.sync_safir=True
-      elif k=="--sync-only":
-        self.sync_only=True
+      if k=="--safir-update":
+        self.update=True
       elif k=="--clear-only":
         self.clear_only=True
       elif k=="--get-logs":
@@ -32,11 +29,10 @@ class CommandLine:
 
       else:
         print("usage:")
-        print("  run test script kalle.py without update safir: master_test_executor --test-script kalle.py")
-        print("  update safir and run test script kally.py:     master_test_executor -s --test-script kalle.py")
-        print("  clear old files, dont run test: master_test_executor --clear-only")
-        print("  sync safir, dont run test:      master_test_executor --sync-only")
-        print("  get log files:      master_test_executor --get-logs")
+        print("  run test script kalle.py: master_test_executor --test-script kalle.py")
+        print("  clear old files: master_test_executor --clear-only")
+        print("  update safir: master_test_executor --safir-update")
+        print("  collect log files: master_test_executor --get-logs")
         sys.exit(1)
 
     if len(args)>0:
@@ -105,9 +101,11 @@ class Executor:
     if not os.path.exists("/home/safir/test_result/"):
       os.makedirs("/home/safir/test_result/")
     
-    print("Remove old runtime.zip")  
-    if os.path.exists("/home/safir/runtime.zip"):
-      os.remove("/home/safir/runtime.zip")
+    print("Remove old deb- and exe- files")
+    for fl in glob.glob("/home/safir/*.deb"):
+      os.remove(fl)
+    for fl in glob.glob("/home/safir/*.exe"):
+      os.remove(fl)
       
   def get_logs(self):
     print("Get logs")
@@ -158,43 +156,78 @@ class Executor:
         print(m+" - no logs found")
                     
     print(" -get logs finished")
-                    
+    
+  def download_from_jenkins(self):
+    subprocess.call(["wget", "-O", "/home/safir/deb.zip",
+    "https://10.0.0.107/safir/job/Project%20Stewart/Config=Release,label=ubuntu-trusty-lts-64-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
+    subprocess.call(["wget", "-O",
+    "/home/safir/win.zip", "https://10.0.0.107/safir/job/Project%20Stewart/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
+    
+    subprocess.call(["unzip", "-o", "/home/safir/deb.zip", "-d", "/home/safir"])
+    subprocess.call(["unzip", "-o", "/home/safir/win.zip", "-d", "/home/safir"])
+    os.remove("/home/safir/deb.zip")
+    os.remove("/home/safir/win.zip")
+    
+    for root, folders, files in os.walk("/home/safir/archive"):
+        for f in files:
+          dst_file=None
+          if f.startswith("safir-sdk-core-testsuite"):
+            dst_file="/home/safir/safir-sdk-core-testsuite.deb"
+          elif f.startswith("safir-sdk-core-dev"):
+            dst_file="/home/safir/safir-sdk-core-dev.deb"
+          elif f.startswith("safir-sdk-core"):
+            dst_file="/home/safir/safir-sdk-core.deb"
+          elif f.startswith("SafirSDKCore"):
+            dst_file="/home/safir/SafirSDKCore.exe"
+            
+          src_file=os.path.join(root, f)
+          shutil.copyfile(src_file, dst_file)
+          
+    shutil.rmtree("/home/safir/archive", ignore_errors=True)
     
   def sync_safir(self):
     print("Get latest SAFIR")
+    safir_core="safir-sdk-core.deb"
+    safir_test="safir-sdk-core-testsuite.deb"
+    safir_dev="safir-sdk-core-dev.deb"
+    safir_win="SafirSDKCore.exe"
     
-    subprocess.call(["wget", "-P", "/home/safir", "http://10.0.0.106:8080/safir/job/Project%20Stewart/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/safir/runtime/*zip*/runtime.zip", "--no-check-certificate"])
-    
-    print("  -run rsync on Linux minions")
+    self.download_from_jenkins()
+    print("  -update Linux minions")
     linux_start_time=time.time()
-    linux_result=self.client.cmd("os:Ubuntu",
-                    "cmd.run",
-                    ["/usr/bin/rsync -a --delete rsync://10.0.0.106/stewart-ubuntu64-release /home/safir/safir"],
-                    timeout=600,
+    self.client.cmd("os:Ubuntu", "cp.get_file",
+                    ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
+                    timeout=900, #15 min
                     expr_form="grain")
+    self.client.cmd("os:Ubuntu", "cp.get_file",
+                    ["salt://"+safir_test, "/home/safir/"+safir_test, "makedirs=True"],
+                    timeout=900, #15 min
+                    expr_form="grain")
+    self.client.cmd("os:Ubuntu", "cp.get_file",
+                    ["salt://"+safir_dev, "/home/safir/"+safir_dev, "makedirs=True"],
+                    timeout=900, #15 min
+                    expr_form="grain")
+
+    print("   installing packages")
+    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo apt-get -y purge safir-sdk-core safir-sdk-core-testsuite safir-sdk-core-dev'], expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
+
     linux_end_time=time.time()
     print("  ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
     
-    self.client.cmd("os:Windows", "cmd.run",
-                    ['rmdir c:\\Users\\safir\\safir /S, /Q'],
-                    expr_form="grain")
-    print("  -copy safir_runtime to Windows minions")
+    print("  -update Windows minions")
+   
     win_start_time=time.time()
-    win_res=self.client.cmd("os:Windows", "cp.get_file",
-                    ["salt://runtime.zip", "c:/Users/safir/safir/runtime.zip", "makedirs=True"],
+    self.client.cmd("os:Windows", "cp.get_file",
+                    ["salt://"+safir_win, "c:/Users/safir/"+safir_win, "makedirs=True"],
                     timeout=900, #15 min
                     expr_form="grain")
     win_end_time=time.time()
-    for k, v in win_res.iteritems():
-      print(k + " = " + v)
     print("  ...finished after " + str(win_end_time - win_start_time) + " seconds")
-    
-    print("  -unzip files (windows)")
-    self.client.cmd('os:Windows', 'cmd.run',
-                    ['"c:\\Program Files\\7-Zip\\7z" x c:\\Users\\safir\\safir\\runtime.zip -oc:\\Users\\safir\\safir'],
-                    expr_form="grain")
-    print(" -sync Safir finished")
-        
+    print(" -update Safir finished")
+
   def upload_test(self):
     print("Upload new test script to minion")
     self.client.cmd("os:Ubuntu", "cp.get_file",
@@ -256,27 +289,20 @@ class Executor:
       self.get_logs()
       return
   
-    if self.cmd.clear_only:
-      self.clear()
-      return
-      
-    if self.cmd.sync_only:
-      self.clear()
-      self.sync_safir()
-      return
-  
     #Run the test script, start clearing old scripts and results
     self.clear()
+    
+    if self.cmd.clear_only:
+      return
+      
+    if self.cmd.update:
+      self.sync_safir()
+      return    
     
     #Start a thread that handles the event when minion has finished the test case
     event_handler=EventHandler(len(self.minions))
     event_handler.start()
     
-    if self.cmd.sync_safir:
-      self.sync_safir()
-    else:
-      print("Skip rsync safir step...")
-
     self.upload_test()    
     self.run_test()    
       
