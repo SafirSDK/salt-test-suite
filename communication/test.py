@@ -6,7 +6,7 @@ from socket import gethostname
 server_minion = "minion00"
 node_type = "nt1" #nt0 has no multicast, nt1 and nt2 is multicast enabled
 node_count = 20
-message_count = 10000000 #number of messages to send from server to clients
+message_count = 10000 #number of messages to send from server to clients
 
 
 def ip_address(host_name):
@@ -45,9 +45,9 @@ def linux_main():
   try:
     f=open("/home/safir/result.txt", "w")
     set_env("HOME", "/home/safir")
-    set_env("PATH", "/home/safir/safir/runtime/bin")
-    set_env("LD_LIBRARY_PATH", "/home/safir/safir/runtime/lib")
-    set_env("SAFIR_RUNTIME", "/home/safir/safir/runtime")
+    #set_env("PATH", "/home/safir/safir/runtime/bin")
+    #set_env("LD_LIBRARY_PATH", "/home/safir/safir/runtime/lib")
+    #set_env("SAFIR_RUNTIME", "/home/safir/safir/runtime")
     
     #subprocess.call(["dots_configuration_check", "-s"], stdout=f, stderr=f)
     #subprocess.call(["communication_test", "-h"], stdout=f, stderr=f)
@@ -63,8 +63,8 @@ def linux_main():
 def windows_main():
   try:
     f=open("c:\\Users\\safir\\result.txt", "w")    
-    set_env("PATH", "c:\\Users\\safir\\safir\\runtime\\bin")
-    set_env("SAFIR_RUNTIME", "c:\\Users\\safir\\safir\\runtime")
+    #set_env("PATH", "c:\\Users\\safir\\safir\\runtime\\bin")
+    #set_env("SAFIR_RUNTIME", "c:\\Users\\safir\\safir\\runtime")
     #subprocess.call(["dots_configuration_check", "-s"], stdout=f, stderr=f, shell=True)
     #subprocess.call(["communication_test", "-h"], stdout=f, stderr=f)
     subprocess.call(communication_test_cmd(), stdout=f, stderr=f, shell=True)

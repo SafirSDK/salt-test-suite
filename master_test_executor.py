@@ -184,17 +184,15 @@ class Executor:
           shutil.copyfile(src_file, dst_file)
           
     shutil.rmtree("/home/safir/archive", ignore_errors=True)
+                    
+  def update_linux(self):
+    print("  -update Linux minions")
+    linux_start_time=time.time()
     
-  def sync_safir(self):
-    print("Get latest SAFIR")
     safir_core="safir-sdk-core.deb"
     safir_test="safir-sdk-core-testsuite.deb"
     safir_dev="safir-sdk-core-dev.deb"
-    safir_win="SafirSDKCore.exe"
     
-    self.download_from_jenkins()
-    print("  -update Linux minions")
-    linux_start_time=time.time()
     self.client.cmd("os:Ubuntu", "cp.get_file",
                     ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
                     timeout=900, #15 min
@@ -209,24 +207,61 @@ class Executor:
                     expr_form="grain")
 
     print("   installing packages")
-    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo apt-get -y purge safir-sdk-core safir-sdk-core-testsuite safir-sdk-core-dev'], expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run',
+                    ['sudo apt-get -y purge safir-sdk-core safir-sdk-core-testsuite safir-sdk-core-dev'],
+                    expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
 
     linux_end_time=time.time()
     print("  ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
+        
+  def windows_uninstall(self):
+    print("   uninstall old Windows installation")
+    installpath=r'c:\Program Files\Safir SDK Core'
+    uninstaller = installpath + r"\Uninstall.exe"
     
+    self.client.cmd('os:Windows', 'cmd.run', ['"'+uninstaller+'" /S'], expr_form="grain")
+    
+    snippet="""
+import os, time
+for x in range(0, 120):
+  if not os.path.exists(r'c:\Program Files\Safir SDK Core'):
+      break
+  time.sleep(5.0)
+    """
+    res=self.client.cmd("os:Windows", "cmd.exec_code", ["python", snippet], expr_form="grain")
+    print(res)
+    print("done")
+        
+  def update_windows(self):
     print("  -update Windows minions")
-   
+    safir_win="SafirSDKCore.exe"
     win_start_time=time.time()
     self.client.cmd("os:Windows", "cp.get_file",
                     ["salt://"+safir_win, "c:/Users/safir/"+safir_win, "makedirs=True"],
                     timeout=900, #15 min
                     expr_form="grain")
+
+    #self.windows_uninstall()
+    
+    self.client.cmd('os:Windows', 'cmd.run',
+                    ['c:\\Users\\safir\\'+safir_win+' /S /NODEVELOPMENT /TESTSUITE'], expr_form="grain")
+                
     win_end_time=time.time()
     print("  ...finished after " + str(win_end_time - win_start_time) + " seconds")
+    
+  def sync_safir(self):
+    print("Install latest Safir SDK Core")
+    #self.update_windows()
+    self.windows_uninstall()
+    """
+    self.download_from_jenkins()
+    self.update_linux()
+    self.update_windows()
     print(" -update Safir finished")
+    """
 
   def upload_test(self):
     print("Upload new test script to minion")
