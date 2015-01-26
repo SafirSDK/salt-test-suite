@@ -232,19 +232,19 @@ for x in range(0, 120):
   time.sleep(5.0)
     """
     res=self.client.cmd("os:Windows", "cmd.exec_code", ["python", snippet], expr_form="grain")
-    print(res)
-    print("done")
+    print("   uninstall completed")
         
   def update_windows(self):
     print("  -update Windows minions")
     safir_win="SafirSDKCore.exe"
     win_start_time=time.time()
+
+    self.windows_uninstall()
+    
     self.client.cmd("os:Windows", "cp.get_file",
                     ["salt://"+safir_win, "c:/Users/safir/"+safir_win, "makedirs=True"],
                     timeout=900, #15 min
                     expr_form="grain")
-
-    #self.windows_uninstall()
     
     self.client.cmd('os:Windows', 'cmd.run',
                     ['c:\\Users\\safir\\'+safir_win+' /S /NODEVELOPMENT /TESTSUITE'], expr_form="grain")
@@ -254,14 +254,11 @@ for x in range(0, 120):
     
   def sync_safir(self):
     print("Install latest Safir SDK Core")
-    #self.update_windows()
-    self.windows_uninstall()
-    """
+        
     self.download_from_jenkins()
     self.update_linux()
     self.update_windows()
     print(" -update Safir finished")
-    """
 
   def upload_test(self):
     print("Upload new test script to minion")

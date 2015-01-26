@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os, subprocess, sys, getopt, time
+import os, subprocess, sys, getopt, time, traceback
 from socket import gethostname
 
 server_minion = "minion00"
@@ -44,7 +44,7 @@ def communication_test_cmd():
 def linux_main():
   try:
     f=open("/home/safir/result.txt", "w")
-    set_env("HOME", "/home/safir")
+    #set_env("HOME", "/home/safir")
     #set_env("PATH", "/home/safir/safir/runtime/bin")
     #set_env("LD_LIBRARY_PATH", "/home/safir/safir/runtime/lib")
     #set_env("SAFIR_RUNTIME", "/home/safir/safir/runtime")
@@ -55,23 +55,20 @@ def linux_main():
   except getopt.GetoptError as err:
     f.write(err)
   except:
-    f.write("Exception caught")
+    f.write("Exception: "+traceback.print_exc())
     
   f.flush()
   f.close()
 
 def windows_main():
   try:
-    f=open("c:\\Users\\safir\\result.txt", "w")    
-    #set_env("PATH", "c:\\Users\\safir\\safir\\runtime\\bin")
-    #set_env("SAFIR_RUNTIME", "c:\\Users\\safir\\safir\\runtime")
-    #subprocess.call(["dots_configuration_check", "-s"], stdout=f, stderr=f, shell=True)
-    #subprocess.call(["communication_test", "-h"], stdout=f, stderr=f)
+    f=open("c:\\Users\\safir\\result.txt", "w")
+    set_env("PATH", r"c:\Program Files\Safir SDK Core\bin")
     subprocess.call(communication_test_cmd(), stdout=f, stderr=f, shell=True)
   except getopt.GetoptError as err:
     f.write(err)
   except:
-    f.write("Exception caught")
+    f.write("Exception: "+traceback.print_exc())
     
   f.flush()
   f.close()
