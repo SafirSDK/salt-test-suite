@@ -6,8 +6,8 @@ from socket import gethostname
 server_minion = "minion00"
 node_type = "nt1" #nt0 has no multicast, nt1 and nt2 is multicast enabled
 node_count = 20
-message_count = 10000 #number of messages to send from server to clients
-
+message_count = 500000 #number of messages to send from server to clients
+message_size = 1400 #message size in bytes
 
 def ip_address(host_name):
   ip="192.168.66.1"+host_name[len(host_name)-2:]
@@ -28,7 +28,7 @@ def communication_test_cmd():
             "-w", str(node_count-1),
             "--nsend", str(message_count),
             "--nrecv", "0",
-            "--size", "1000",
+            "--size", str(message_size),
             "--thread-count", "2"]
   else:
     return ["communication_test",
@@ -38,7 +38,7 @@ def communication_test_cmd():
             "-w", str(node_count-1),
             "--nsend", "0",
             "--nrecv", str(message_count),
-            "--size", "1000",
+            "--size", str(message_size),
             "--thread-count", "2"]
   
 def linux_main():

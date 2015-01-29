@@ -9,10 +9,11 @@ import salt.utils.event
 #-----------------------------------------------------
 class CommandLine:
   def __init__(self):
-    opts, args = getopt.getopt(sys.argv[1:], "h:", ["test-script=", "safir-update", "clear-only", "get-logs", "help"])
+    opts, args = getopt.getopt(sys.argv[1:], "h:", ["test-script=", "safir-update", "clear-only", "get-logs", "get-results", "help"])
     self.update=False
     self.clear_only=False
     self.get_logs=False
+    self.get_results=False
     self.minion_command="*"
     self.test_script_path=None
     self.test_script=None
@@ -23,6 +24,8 @@ class CommandLine:
         self.clear_only=True
       elif k=="--get-logs":
         self.get_logs=True
+      elif k=="--get-results":
+        self.get_results=True
       elif k=="--test-script":
         self.test_script_path=v
         self.test_script=os.path.basename(v)
@@ -33,6 +36,7 @@ class CommandLine:
         print("  clear old files: master_test_executor --clear-only")
         print("  update safir: master_test_executor --safir-update")
         print("  collect log files: master_test_executor --get-logs")
+        print("  collect all result files: master_test_executor --get-results")
         sys.exit(1)
 
     if len(args)>0:
@@ -321,6 +325,10 @@ for x in range(0, 120):
       self.get_logs()
       return
   
+    if self.cmd.get_results:
+      self.collect_result()
+      return
+      
     #Run the test script, start clearing old scripts and results
     self.clear()
     
