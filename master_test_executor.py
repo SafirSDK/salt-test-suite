@@ -299,7 +299,7 @@ for x in range(0, 120):
     if not abspath.startswith("/home/safir/") or not os.path.isfile(abspath):
         log("Uh oh! Strange script path")
         raise Exception("Failed to find test script")
-    saltpath = "salt://" + abspath[len("/home/safir/"), -1]
+    saltpath = "salt://" + abspath[len("/home/safir/"):]
     log(" - using salt path", saltpath)
 
     self.client.cmd("os:Ubuntu", "cp.get_file",
