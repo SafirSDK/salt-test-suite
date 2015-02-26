@@ -296,7 +296,7 @@ for x in range(0, 120):
     abspath = os.path.join(os.getcwd(), self.cmd.test_script_path)
     log("Uploading new test script to minion:", abspath)
 
-    if not abspath.startswith("/home/safir/") or os.path.isfile(abspath):
+    if not abspath.startswith("/home/safir/") or not os.path.isfile(abspath):
         log("Uh oh! Strange script path")
         sys.exit(1)
     saltpath = "salt://" + abspath[len("/home/safir/"), -1]
