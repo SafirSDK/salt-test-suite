@@ -298,7 +298,7 @@ for x in range(0, 120):
 
     if not abspath.startswith("/home/safir/") or not os.path.isfile(abspath):
         log("Uh oh! Strange script path")
-        sys.exit(1)
+        raise Exception("Failed to find test script")
     saltpath = "salt://" + abspath[len("/home/safir/"), -1]
     log(" - using salt path", saltpath)
 
@@ -390,8 +390,12 @@ for x in range(0, 120):
 
 def main():
   log("===== Start =====")
-  ex=Executor()
-  ex.run()
+  try:
+    ex=Executor()
+    ex.run()
+  except Exception as e:
+    log ("Caught exception: " + str(e))
+    return 1
   log("--- Finished! ---")
   return 0
 
