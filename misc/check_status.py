@@ -25,10 +25,10 @@
 ###############################################################################
 import subprocess,sys
 
-output = subprocess.check_output(("salt-run","-t","20","manage.status")).decode("utf-8")
+output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
 
 print(output)
-if output.find("down") != -1:
+if output.find("minion") != -1:
     print ("At least one node is down!")
     sys.exit(1)
 else:
