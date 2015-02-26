@@ -294,7 +294,7 @@ for x in range(0, 120):
 
   def upload_test(self):
     log("Upload new test script to minion")
-    abspath = os.getcwd() + self.cmd.test_script_path
+    abspath = os.path.join(os.getcwd(), self.cmd.test_script_path)
     log("Uploading test script:", abspath)
     self.client.cmd("os:Ubuntu", "cp.get_file",
                     ["salt://" + abspath, "/home/safir/"+self.cmd.test_script],
