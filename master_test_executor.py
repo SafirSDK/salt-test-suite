@@ -162,9 +162,9 @@ class Executor:
     print(" -get logs finished")
     
   def download_from_jenkins(self):
-    subprocess.call(["wget", "-O", "/home/safir/deb.zip",
+    subprocess.call(["wget", "-nv", "-O", "/home/safir/deb.zip",
     "https://10.0.0.107/safir/job/Project%20Stewart/Config=Release,label=ubuntu-trusty-lts-64-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
-    subprocess.call(["wget", "-O",
+    subprocess.call(["wget", "-nv", "-O",
     "/home/safir/win.zip", "https://10.0.0.107/safir/job/Project%20Stewart/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
     
     subprocess.call(["unzip", "-o", "/home/safir/deb.zip", "-d", "/home/safir"])
