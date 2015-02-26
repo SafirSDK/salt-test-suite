@@ -129,9 +129,9 @@ class Executor:
     self.client.cmd("os:Windows", "cmd.run", ["del c:\\Users\\safir\\result.txt"], expr_form="grain")
 
     log("Remove old result files from master")
-    shutil.rmtree("/home/safir/test_result/", ignore_errors=True)
-    if not os.path.exists("/home/safir/test_result/"):
-      os.makedirs("/home/safir/test_result/")
+    shutil.rmtree("test_result/", ignore_errors=True)
+    if not os.path.exists("test_result/"):
+      os.makedirs("test_result/")
 
     log("Remove old deb- and exe- files")
     for fl in glob.glob("/home/safir/*.deb"):
@@ -294,11 +294,13 @@ for x in range(0, 120):
 
   def upload_test(self):
     log("Upload new test script to minion")
+    abspath = os.getcwd() + self.cmd.test_script_path
+    log("Uploading test script:", abspath)
     self.client.cmd("os:Ubuntu", "cp.get_file",
-                    ["salt://salt-test-suite/"+self.cmd.test_script_path, "/home/safir/"+self.cmd.test_script],
+                    ["salt://" + abspath, "/home/safir/"+self.cmd.test_script],
                     expr_form="grain")
     self.client.cmd("os:Windows", "cp.get_file",
-                    ["salt://salt-test-suite/"+self.cmd.test_script_path, "c:/Users/safir/"+self.cmd.test_script],
+                    ["salt://" + abspath, "c:/Users/safir/"+self.cmd.test_script],
                     expr_form="grain")
 
   def run_test(self):
