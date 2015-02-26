@@ -293,14 +293,20 @@ for x in range(0, 120):
     log(" -update Safir finished")
 
   def upload_test(self):
-    log("Upload new test script to minion")
     abspath = os.path.join(os.getcwd(), self.cmd.test_script_path)
-    log("Uploading test script:", abspath)
+    log("Uploading new test script to minion:", abspath)
+
+    if not abspath.startswith("/home/safir/") or os.path.isfile(absopath):
+        log("Uh oh! Strange script path")
+        sys.exit(1)
+    saltpath = "salt://" + abspath[len("/home/safir/"), -1]
+    log(" - using salt path", saltpath)
+
     self.client.cmd("os:Ubuntu", "cp.get_file",
-                    ["salt://" + abspath, "/home/safir/"+self.cmd.test_script],
+                    [saltpath, "/home/safir/"+self.cmd.test_script],
                     expr_form="grain")
     self.client.cmd("os:Windows", "cp.get_file",
-                    ["salt://" + abspath, "c:/Users/safir/"+self.cmd.test_script],
+                    [saltpath, "c:/Users/safir/"+self.cmd.test_script],
                     expr_form="grain")
 
   def run_test(self):
