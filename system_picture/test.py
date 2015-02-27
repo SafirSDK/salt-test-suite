@@ -48,7 +48,7 @@ def main():
     log ("Caught exception: " + str(e))
 
   #do we need this?
-  # subprocess.call(["salt-call", "event.fire_master", gethostname(), "safir_test"])
+  subprocess.call(["salt-call", "event.fire_master", gethostname(), "safir_test"])
   return 0 if success else 1
 
 #------------------------------------------------
