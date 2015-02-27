@@ -80,12 +80,14 @@ class EventHandler(threading.Thread):
     self.event_tag="safir_test"
     self.received=False
     self.num_minions=num_minions
+    self.results = dict()
 
   def run(self):
     ev=salt.utils.event.MasterEvent("/var/run/salt/master")
     num_events=0
     for data in ev.iter_events(tag=self.event_tag):
-      log("Got event from", data)
+      log("Got event from", data["id"])
+      self.results[data["id"]] = data["data"] 
       num_events=num_events+1
       if num_events==self.num_minions:
         break
@@ -359,21 +361,21 @@ for x in range(0, 120):
   def run(self):
     if self.cmd.get_logs:
       self.get_logs()
-      return
+      return True
 
     if self.cmd.get_results:
       self.collect_result()
-      return
+      return True
 
     #Run the test script, start clearing old scripts and results
     self.clear()
 
     if self.cmd.clear_only:
-      return
+      return True
 
     if self.cmd.update:
       self.sync_safir()
-      return
+      return True
 
     #Start a thread that handles the event when minion has finished the test case
     event_handler=EventHandler(len(self.minions))
@@ -393,14 +395,21 @@ for x in range(0, 120):
     for r in ret:
       log(r)
 
+    aggregateResult = True
+    for minion,result in event_handler.results.iteritems():
+      aggregateResult = result and aggregateResult
+
     #If we received a test finished event then collect the result
     self.collect_result()
+
+    return aggregateResult
 
 def main():
   log("===== Start =====")
   try:
     ex=Executor()
-    ex.run()
+    res = ex.run()
+    return 0 if res else 1
   except Exception as e:
     log ("Caught exception: " + str(e))
     return 1

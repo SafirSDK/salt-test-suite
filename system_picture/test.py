@@ -53,13 +53,12 @@ def main():
 
   if success:
       log("Test was successful")
-      return 0
   else:
       log("Test failed")
-      return 1
 
 #------------------------------------------------
 # If this is the main module, start the program
 #------------------------------------------------
 if __name__ == "__main__":
-  sys.exit(main())
+  main()
+  sys.exit(0)
