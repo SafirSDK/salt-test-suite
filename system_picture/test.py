@@ -48,8 +48,14 @@ def main():
     log ("Caught exception: " + str(e))
 
   #do we need this?
-  subprocess.call(["salt-call", "event.fire_master", gethostname(), "safir_test"])
-  return 0 if success else 1
+  subprocess.check_output(["salt-call", "event.fire_master", gethostname(), "safir_test"])
+
+  if success:
+      log("Test was successful")
+      return 0
+  else:
+      log("Test failed")
+      return 1
 
 #------------------------------------------------
 # If this is the main module, start the program
