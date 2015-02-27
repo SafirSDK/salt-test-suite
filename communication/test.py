@@ -86,7 +86,7 @@ def main():
     windows_main()
 
   #signal that we are done
-  subprocess.call(["salt-call", "event.fire_master", str(True), "safir_test"])
+  subprocess.check_output(["salt-call", "event.fire_master", str(True), "safir_test"], stderr=subprocess.STDOUT)
 
 #------------------------------------------------
 # If this is the main module, start the program
