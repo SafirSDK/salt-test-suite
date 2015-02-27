@@ -385,11 +385,11 @@ for x in range(0, 120):
     log("Wait for finished signal from the minions")
     event_handler.join()
 
-    ret = self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu", verbose=True)
+    ret = self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu")
     for r in ret:
       log(r)
 
-    ret = self.client.get_cli_returns(self.windows_jid, "G@os:Windows", verbose=True)
+    ret = self.client.get_cli_returns(self.windows_jid, "G@os:Windows")
     for r in ret:
       log(r)
 
