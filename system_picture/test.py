@@ -49,7 +49,9 @@ def main():
     log ("Caught exception: " + str(e))
 
   #do we need this?
-  subprocess.check_output(["salt-call", "event.fire_master", gethostname(), "safir_test"])
+  subprocess.check_output(["salt-call", "event.fire_master", gethostname(), "safir_test"], stderr=subprocess.STDOUT)
+
+  time.sleep(20)
 
   if success:
       log("Test was successful")
