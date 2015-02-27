@@ -41,7 +41,8 @@ def run_test():
 def main():
   success = False
   try:
-    success = run_test()
+    run_test()
+    success = True
   except TestFailure as e:
     log ("Error: " + str(e))
   except Exception as e:
