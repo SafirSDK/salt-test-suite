@@ -314,15 +314,15 @@ for x in range(0, 120):
 
     node_count=str(len(self.minions))
 
-    self.client.cmd_async("G@os:Ubuntu and "+self.cmd.minion_command,
-                    "cmd.run",
-                    ["python /home/safir/"+self.cmd.test_script+" --node-count "+node_count],
-                    expr_form="compound")
+    self.linux_jid = self.client.cmd_async("G@os:Ubuntu and "+self.cmd.minion_command,
+                                           "cmd.run",
+                                           ["python /home/safir/"+self.cmd.test_script+" --node-count "+node_count],
+                                           expr_form="compound")
 
-    self.client.cmd_async("G@os:Windows and "+self.cmd.minion_command,
-                    "cmd.run",
-                    ["python c:\\Users\\safir\\"+self.cmd.test_script+" --node-count "+node_count],
-                    expr_form="compound")
+    self.windows_jid = self.client.cmd_async("G@os:Windows and "+self.cmd.minion_command,
+                                             "cmd.run",
+                                             ["python c:\\Users\\safir\\"+self.cmd.test_script+" --node-count "+node_count],
+                                             expr_form="compound")
 
   def collect_result(self):
     log("Collect result")
@@ -384,6 +384,9 @@ for x in range(0, 120):
 
     log("Wait for finished signal from the minions")
     event_handler.join()
+
+    log(self.client.get_cli_returns(self.linux_jid))
+    log(self.client.get_cli_returns(self.windows_jid))
 
     #If we received a test finished event then collect the result
     self.collect_result()
