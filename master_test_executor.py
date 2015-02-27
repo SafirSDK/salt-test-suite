@@ -385,8 +385,8 @@ for x in range(0, 120):
     log("Wait for finished signal from the minions")
     event_handler.join()
 
-    log(self.client.get_cli_returns(self.linux_jid))
-    log(self.client.get_cli_returns(self.windows_jid))
+    log(self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"))
+    log(self.client.get_cli_returns(self.windows_jid, "G@os:Windows"))
 
     #If we received a test finished event then collect the result
     self.collect_result()
