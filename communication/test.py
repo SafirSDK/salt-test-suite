@@ -18,7 +18,7 @@ def set_env(name, value):
     os.environ[name]+=os.pathsep+value
   else:
     os.environ[name]=value
-    
+
 def communication_test_cmd():
   my_name=gethostname()
   if my_name==server_minion:
@@ -40,7 +40,7 @@ def communication_test_cmd():
             "--nrecv", str(message_count),
             "--size", str(message_size),
             "--thread-count", "2"]
-  
+
 def linux_main():
   try:
     f=open("/home/safir/result.txt", "w")
@@ -48,15 +48,15 @@ def linux_main():
     #set_env("PATH", "/home/safir/safir/runtime/bin")
     #set_env("LD_LIBRARY_PATH", "/home/safir/safir/runtime/lib")
     #set_env("SAFIR_RUNTIME", "/home/safir/safir/runtime")
-    
+
     #subprocess.call(["dots_configuration_check", "-s"], stdout=f, stderr=f)
     #subprocess.call(["communication_test", "-h"], stdout=f, stderr=f)
-    subprocess.call(communication_test_cmd(), stdout=f, stderr=f)    
+    subprocess.call(communication_test_cmd(), stdout=f, stderr=f)
   except getopt.GetoptError as err:
     f.write(err)
   except:
     f.write("Exception: "+traceback.print_exc())
-    
+
   f.flush()
   f.close()
 
@@ -69,28 +69,27 @@ def windows_main():
     f.write(err)
   except:
     f.write("Exception: "+traceback.print_exc())
-    
+
   f.flush()
   f.close()
-  
-def main():  
+
+def main():
   global node_count
   opts, args = getopt.getopt(sys.argv[1:], "", ["node-count="])
   for o, a in opts:
     if o=="--node-count":
       node_count=int(a)
-  
+
   if sys.platform.lower().startswith('linux'):
     linux_main()
   elif sys.platform.lower().startswith('win'):
     windows_main()
-	
-	#signal that we are done
-  subprocess.call(["salt-call", "event.fire_master", gethostname(), "safir_test"])
-   
+
+  #signal that we are done
+  subprocess.call(["salt-call", "event.fire_master", True, "safir_test"])
+
 #------------------------------------------------
 # If this is the main module, start the program
 #------------------------------------------------
 if __name__ == "__main__":
   main()
-  

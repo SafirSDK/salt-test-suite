@@ -42,7 +42,7 @@ def main():
   success = False
   try:
     run_test()
-    #success = True
+    success = True
   except TestFailure as e:
     log ("Error: " + str(e))
   except Exception as e:
