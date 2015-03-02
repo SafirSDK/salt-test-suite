@@ -52,6 +52,7 @@ def prevhostname():
 
 def run_test():
     if sys.platform == "win32":
+        log("Not running on windows")
         return
 
     args = ("--start", str(mynum() * 3),
@@ -59,7 +60,8 @@ def run_test():
             "--total-nodes", str(30),
             "--own-ip", gethostname(),
             "--prev-ip", prevhostname())
-    log(args)
+    log("Starting circular_restart.py with arguments",args)
+    subprocess.call(("circular_restart",) + args)
     #signal that we are done
 
 def main():
