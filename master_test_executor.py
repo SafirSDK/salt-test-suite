@@ -193,9 +193,9 @@ class Executor:
 
   def download_from_jenkins(self):
     subprocess.call(["wget", "-nv", "-O", "/home/safir/deb.zip",
-    "https://10.0.0.107/safir/job/Project%20Stewart/Config=Release,label=ubuntu-trusty-lts-64-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
+    "https://connect.consoden.se/safir/job/Project%20Stewart/Config=Release,label=ubuntu-trusty-lts-64-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
     subprocess.call(["wget", "-nv", "-O",
-    "/home/safir/win.zip", "https://10.0.0.107/safir/job/Project%20Stewart/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
+    "/home/safir/win.zip", "https://connect.consoden.se/safir/job/Project%20Stewart/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
 
     subprocess.call(["unzip", "-o", "/home/safir/deb.zip", "-d", "/home/safir"])
     subprocess.call(["unzip", "-o", "/home/safir/win.zip", "-d", "/home/safir"])
@@ -400,7 +400,7 @@ for x in range(0, 120):
     for minion in sorted(event_handler.results):
       result = event_handler.results[minion]
       log(minion, "returned", result)
-      log("  output:", minionOutputs[minion])
+      log("  output:", minionOutputs[minion]["ret"])
       aggregateResult = result and aggregateResult
 
     #If we received a test finished event then collect the result
