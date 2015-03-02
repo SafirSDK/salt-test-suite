@@ -399,8 +399,8 @@ for x in range(0, 120):
     aggregateResult = True
     for minion in sorted(event_handler.results):
       result = event_handler.results[minion]
-      log(minion, "returned", result)
-      log("  output:", minionOutputs[minion]["ret"])
+      log("===============", minion, "returned", result, "== Output: ===============")
+      log(minionOutputs[minion]["ret"])
       aggregateResult = result and aggregateResult
 
     #If we received a test finished event then collect the result
