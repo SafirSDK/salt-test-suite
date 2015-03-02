@@ -24,41 +24,59 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, subprocess, sys, getopt, time, traceback
+import os, subprocess, sys, getopt, time, traceback, re
 from socket import gethostname
 
 def log(*args, **kwargs):
-  print(*args, **kwargs)
-  sys.stdout.flush()
+    print(*args, **kwargs)
+    sys.stdout.flush()
 
 class TestFailure(Exception):
-  pass
+    pass
+
+def mynum():
+    num = re.match(r"minion([0-9][0-9])",gethostname).group(1))
+    return int(num)
+
+def prevhostname():
+    num = mynum() + 1
+    if num > 9
+        num = 0
+    return "minion{0:02d}".format(num)
 
 def run_test():
-  log("not doing anything useful yet")
-  #signal that we are done
+    if sys.platform == "win32":
+        return
+
+    args = ("--start", str(mynum() * 3),
+            "--nodes", str(3),
+            "--total-nodes", str(30),
+            "--own-ip", gethostname(),
+            "--prev-ip", prevhostname())
+    log(args)
+    #signal that we are done
 
 def main():
-  success = False
-  try:
-    run_test()
-    success = True
-  except TestFailure as e:
-    log ("Error: " + str(e))
-  except Exception as e:
-    log ("Caught exception: " + str(e))
+    success = False
+    try:
+      run_test()
+      success = True
+    except TestFailure as e:
+      log ("Error: " + str(e))
+    except Exception as e:
+      log ("Caught exception: " + str(e))
 
-  #do we need this?
-  subprocess.check_output(["salt-call", "event.fire_master", str(success), "safir_test"], stderr=subprocess.STDOUT)
+    #do we need this?
+    subprocess.check_output(["salt-call", "event.fire_master", str(success), "safir_test"], stderr=subprocess.STDOUT)
 
-  if success:
+    if success:
       log("Test was successful")
-  else:
+    else:
       log("Test failed")
 
 #------------------------------------------------
 # If this is the main module, start the program
 #------------------------------------------------
 if __name__ == "__main__":
-  main()
-  sys.exit(0)
+    main()
+    sys.exit(0)
