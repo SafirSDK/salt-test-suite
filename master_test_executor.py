@@ -397,8 +397,8 @@ for x in range(0, 120):
       minionOutputs.update(r)
 
     aggregateResult = True
-    for minion,result in event_handler.results.iteritems():
-      log(minion, "returned", result)
+    for minion in sorted(event_handler.results):
+      log(minion, "returned", event_handler.result[minion])
       log("  output:", minionOutputs[minion])
       aggregateResult = result and aggregateResult
 
