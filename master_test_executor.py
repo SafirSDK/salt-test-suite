@@ -388,14 +388,13 @@ for x in range(0, 120):
     event_handler.join()
 
     minionOutputs = dict()
+    log("Collecting output from Linux minions")
     for r in self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"):
       minionOutputs.update(r)
 
+    log("Collecting output from Windows minions")
     for r in self.client.get_cli_returns(self.windows_jid, "G@os:Windows"):
       minionOutputs.update(r)
-
-    #for minion, output in minionOutputs.iteritems():
-    #  log()
 
     aggregateResult = True
     for minion,result in event_handler.results.iteritems():
