@@ -24,8 +24,7 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, subprocess, sys, getopt, time, traceback, re
-from socket import gethostname
+import os, subprocess, sys, getopt, time, traceback, re, socket
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
@@ -34,13 +33,20 @@ def log(*args, **kwargs):
 class TestFailure(Exception):
     pass
 
+def gethostname():
+    hostname = socket.gethostname()
+    if hostname.startswith("minion"):
+        return hostname
+    else:
+        return "minion09"
 def mynum():
-    num = re.match(r"minion([0-9][0-9])",gethostname).group(1))
+    num = re.match(r"minion([0-9][0-9])",gethostname()).group(1)
     return int(num)
+
 
 def prevhostname():
     num = mynum() + 1
-    if num > 9
+    if num > 9:
         num = 0
     return "minion{0:02d}".format(num)
 
