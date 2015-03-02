@@ -41,7 +41,7 @@ def mynum():
 def gethostname():
     #hostname = socket.gethostname()
     #return hostname + "-test"
-    return "192.168.66.1{0:02d}".format(num)
+    return "192.168.66.1{0:02d}".format(mynum())
 
 def prevhostname():
     num = mynum() - 1
