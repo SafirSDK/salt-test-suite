@@ -387,16 +387,20 @@ for x in range(0, 120):
     log("Wait for finished signal from the minions")
     event_handler.join()
 
-    ret = self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu")
-    for r in ret:
-      log(r)
+    minionOutputs = dict()
+    for r in self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"):
+      minionOutputs.update(r)
 
-    ret = self.client.get_cli_returns(self.windows_jid, "G@os:Windows")
-    for r in ret:
-      log(r)
+    for r in self.client.get_cli_returns(self.windows_jid, "G@os:Windows"):
+      minionOutputs.update(r)
+
+    #for minion, output in minionOutputs.iteritems():
+    #  log()
 
     aggregateResult = True
     for minion,result in event_handler.results.iteritems():
+      log(minion, "returned", result)
+      log("  output:", minionOutputs(minion))
       aggregateResult = result and aggregateResult
 
     #If we received a test finished event then collect the result

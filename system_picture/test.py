@@ -45,9 +45,9 @@ def mynum():
 
 
 def prevhostname():
-    num = mynum() + 1
-    if num > 9:
-        num = 0
+    num = mynum() - 1
+    if num < 0:
+        num = 9
     return "minion{0:02d}".format(num)
 
 def run_test():
