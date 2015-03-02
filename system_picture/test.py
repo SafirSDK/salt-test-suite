@@ -59,7 +59,8 @@ def run_test():
             "--nodes", str(3),
             "--total-nodes", str(30),
             "--own-ip", gethostname(),
-            "--prev-ip", prevhostname())
+            "--prev-ip", prevhostname(),
+            "--revolutions", str(2))
     log("Starting circular_restart.py with arguments",args)
     subprocess.call(("circular_restart",) + args)
     #signal that we are done
