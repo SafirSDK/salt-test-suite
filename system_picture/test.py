@@ -35,20 +35,17 @@ class TestFailure(Exception):
 
 def gethostname():
     hostname = socket.gethostname()
-    if hostname.startswith("minion"):
-        return hostname
-    else:
-        return "minion09"
+    return hostname + "-test"
+
 def mynum():
     num = re.match(r"minion([0-9][0-9])",gethostname()).group(1)
     return int(num)
-
 
 def prevhostname():
     num = mynum() - 1
     if num < 0:
         num = 9
-    return "minion{0:02d}".format(num)
+    return "minion{0:02d}-test".format(num)
 
 def run_test():
     if sys.platform == "win32":
