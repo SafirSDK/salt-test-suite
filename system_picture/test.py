@@ -33,19 +33,22 @@ def log(*args, **kwargs):
 class TestFailure(Exception):
     pass
 
-def gethostname():
-    hostname = socket.gethostname()
-    return hostname + "-test"
 
 def mynum():
-    num = re.match(r"minion([0-9][0-9])",gethostname()).group(1)
+    num = re.match(r"minion([0-9][0-9])",socket.gethostname()).group(1)
     return int(num)
+
+def gethostname():
+    #hostname = socket.gethostname()
+    #return hostname + "-test"
+    return "192.168.66.1{0:02d}".format(num)
 
 def prevhostname():
     num = mynum() - 1
     if num < 0:
         num = 9
-    return "minion{0:02d}-test".format(num)
+    #return "minion{0:02d}-test".format(num)
+    return "192.168.66.1{0:02d}".format(num)
 
 def run_test():
     if sys.platform == "win32":
