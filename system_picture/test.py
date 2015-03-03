@@ -39,16 +39,16 @@ def mynum():
     return int(num)
 
 def gethostname():
-    #hostname = socket.gethostname()
-    #return hostname + "-test"
-    return "192.168.66.1{0:02d}".format(mynum())
+    hostname = socket.gethostname()
+    return hostname + "-test"
+    #return "192.168.66.1{0:02d}".format(mynum())
 
 def prevhostname():
     num = mynum() - 1
     if num < 0:
         num = 9
-    #return "minion{0:02d}-test".format(num)
-    return "192.168.66.1{0:02d}".format(num)
+    return "minion{0:02d}-test".format(num)
+    #return "192.168.66.1{0:02d}".format(num)
 
 def run_test():
     if sys.platform == "win32":
@@ -62,8 +62,11 @@ def run_test():
             "--prev-ip", prevhostname(),
             "--revolutions", str(2))
     log("Starting circular_restart.py with arguments",args)
-    subprocess.call(("circular_restart",) + args)
-    #signal that we are done
+    ret = subprocess.call(("circular_restart",) + args)
+
+    log("circular_restart.py exited with code", ret)
+    if ret != 0:
+        raise TestFailure("circular_restart.py failed")
 
 def main():
     success = False
