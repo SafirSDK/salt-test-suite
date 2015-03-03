@@ -26,7 +26,7 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket
 
-NODES_PER_COMPUTER = 1
+NODES_PER_COMPUTER = 3
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
