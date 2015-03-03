@@ -26,6 +26,8 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket
 
+NODES_PER_COMPUTER = 1
+
 def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
@@ -55,9 +57,9 @@ def run_test():
         log("Not running on windows")
         return
 
-    args = ("--start", str(mynum() * 3),
-            "--nodes", str(3),
-            "--total-nodes", str(30),
+    args = ("--start", str(mynum() * NODES_PER_COMPUTER),
+            "--nodes", str(NODES_PER_COMPUTER),
+            "--total-nodes", str(10 * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--prev-ip", prevhostname(),
             "--revolutions", str(2))
