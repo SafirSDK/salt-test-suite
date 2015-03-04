@@ -3,7 +3,7 @@
 import os, subprocess, sys, getopt, time, traceback
 from socket import gethostname
 
-server_minion = "minion00"
+server_minion = "minion13"
 node_type = "nt0" #nt0 has no multicast, nt1 and nt2 is multicast enabled
 node_count = 20
 message_count = 10000 #number of messages to send from server to clients
