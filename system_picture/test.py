@@ -53,10 +53,6 @@ def prevhostname():
     return "192.168.66.1{0:02d}".format(num)
 
 def run_test():
-    if sys.platform == "win32":
-        log("Not running on windows")
-        return
-
     args = ("--start", str(mynum() * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
             "--total-nodes", str(10 * NODES_PER_COMPUTER),
