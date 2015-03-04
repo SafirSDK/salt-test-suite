@@ -281,7 +281,7 @@ for x in range(0, 120):
                     expr_form="grain")
 
     self.client.cmd('os:Windows', 'cmd.run',
-                    ['c:\\Users\\safir\\'+safir_win+' /S /NODEVELOPMENT /TESTSUITE'], expr_form="grain")
+                    ['c:\\Users\\safir\\'+safir_win+' /S /TESTSUITE'], expr_form="grain") #Add /NODEVELOPMENT before testsuite to skip dev
 
     win_end_time=time.time()
     log("  ...finished after " + str(win_end_time - win_start_time) + " seconds")
