@@ -26,7 +26,7 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket
 
-NODES_PER_COMPUTER = 3
+NODES_PER_COMPUTER = 1
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
@@ -48,7 +48,7 @@ def gethostname():
 def prevhostname():
     num = mynum() - 1
     if num < 0:
-        num = 9
+        num = 19
     #return "minion{0:02d}-test".format(num)
     return "192.168.66.1{0:02d}".format(num)
 
@@ -64,7 +64,10 @@ def run_test():
             "--prev-ip", prevhostname(),
             "--revolutions", str(2))
     log("Starting circular_restart.py with arguments",args)
-    ret = subprocess.call(("circular_restart",) + args)
+    if sys.platform == "win32":
+        ret = subprocess.call(("circular_restart.py",) + args, shell = True)
+    else:
+        ret = subprocess.call(("circular_restart",) + args)
 
     log("circular_restart.py exited with code", ret)
     if ret != 0:
