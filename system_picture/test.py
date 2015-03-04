@@ -55,7 +55,7 @@ def prevhostname():
 def run_test():
     args = ("--start", str(mynum() * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
-            "--total-nodes", str(10 * NODES_PER_COMPUTER),
+            "--total-nodes", str(20 * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--prev-ip", prevhostname(),
             "--revolutions", str(2))
