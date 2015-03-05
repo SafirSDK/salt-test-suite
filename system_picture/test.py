@@ -26,7 +26,7 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket
 
-NODES_PER_COMPUTER = 3
+NODES_PER_COMPUTER = 1
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
@@ -42,15 +42,15 @@ def mynum():
 
 def gethostname():
     hostname = socket.gethostname()
-    #return hostname + "-test"
-    return "192.168.66.1{0:02d}".format(mynum())
+    return hostname + "-test"
+    #return "192.168.66.1{0:02d}".format(mynum())
 
 def prevhostname():
     num = mynum() - 1
     if num < 0:
         num = 19
-    #return "minion{0:02d}-test".format(num)
-    return "192.168.66.1{0:02d}".format(num)
+    return "minion{0:02d}-test".format(num)
+    #return "192.168.66.1{0:02d}".format(num)
 
 def run_test():
     args = ("--start", str(mynum() * NODES_PER_COMPUTER),
