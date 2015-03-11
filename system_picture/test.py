@@ -26,7 +26,7 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket
 
-NODES_PER_COMPUTER = 1
+NODES_PER_COMPUTER = 3
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
@@ -58,7 +58,7 @@ def run_test():
             "--total-nodes", str(20 * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--prev-ip", prevhostname(),
-            "--revolutions", str(2))
+            "--revolutions", str(3))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
         ret = subprocess.call(("circular_restart.py",) + args, shell = True)
