@@ -27,6 +27,8 @@ from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket
 
 NODES_PER_COMPUTER = 3
+LINUX_ONLY = True
+COMPUTERS = 10 + 0 if LINUX_ONLY else 10
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
@@ -55,12 +57,15 @@ def prevhostname():
 def run_test():
     args = ("--start", str(mynum() * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
-            "--total-nodes", str(20 * NODES_PER_COMPUTER),
+            "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--prev-ip", prevhostname(),
             "--revolutions", str(3))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
+        if LINUX_ONLY:
+            log("not running on windows")
+            return
         ret = subprocess.call(("circular_restart.py",) + args, shell = True)
     else:
         ret = subprocess.call(("circular_restart",) + args)
