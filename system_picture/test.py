@@ -50,7 +50,10 @@ def gethostname():
 def prevhostname():
     num = mynum() - 1
     if num < 0:
-        num = 19
+        if LINUX_ONLY:
+            num = 9
+        else:
+            num = 19
     return "minion{0:02d}-test".format(num)
     #return "192.168.66.1{0:02d}".format(num)
 
