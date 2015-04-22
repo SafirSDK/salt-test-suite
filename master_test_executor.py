@@ -207,7 +207,7 @@ class Executor:
           dst_file=None
           if f.startswith("safir-sdk-core-testsuite"):
             dst_file="/home/safir/safir-sdk-core-testsuite.deb"
-          if f.startswith("safir-sdk-core-dbg"):
+          elif f.startswith("safir-sdk-core-dbg"):
             dst_file="/home/safir/safir-sdk-core-dbg.deb"
           elif f.startswith("safir-sdk-core-dev"):
             dst_file="/home/safir/safir-sdk-core-dev.deb"
