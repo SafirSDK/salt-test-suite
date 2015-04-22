@@ -207,6 +207,8 @@ class Executor:
           dst_file=None
           if f.startswith("safir-sdk-core-testsuite"):
             dst_file="/home/safir/safir-sdk-core-testsuite.deb"
+          if f.startswith("safir-sdk-core-dbg"):
+            dst_file="/home/safir/safir-sdk-core-dbg.deb"
           elif f.startswith("safir-sdk-core-dev"):
             dst_file="/home/safir/safir-sdk-core-dev.deb"
           elif f.startswith("safir-sdk-core"):
@@ -224,11 +226,16 @@ class Executor:
     linux_start_time=time.time()
 
     safir_core="safir-sdk-core.deb"
+    safir_dbg="safir-sdk-core-dbg.deb"
     safir_test="safir-sdk-core-testsuite.deb"
     safir_dev="safir-sdk-core-dev.deb"
 
     self.client.cmd("os:Ubuntu", "cp.get_file",
                     ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
+                    timeout=900, #15 min
+                    expr_form="grain")
+    self.client.cmd("os:Ubuntu", "cp.get_file",
+                    ["salt://"+safir_dbg, "/home/safir/"+safir_dbg, "makedirs=True"],
                     timeout=900, #15 min
                     expr_form="grain")
     self.client.cmd("os:Ubuntu", "cp.get_file",
@@ -242,9 +249,10 @@ class Executor:
 
     log("   installing packages")
     self.client.cmd('os:Ubuntu', 'cmd.run',
-                    ['sudo apt-get -y purge safir-sdk-core safir-sdk-core-testsuite safir-sdk-core-dev'],
+                    ['sudo apt-get -y purge safir-sdk-core safir-sdk-core-dbg safir-sdk-core-testsuite safir-sdk-core-dev'],
                     expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dbg], expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
 
