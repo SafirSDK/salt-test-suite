@@ -246,10 +246,10 @@ class Executor:
                     ["salt://"+safir_test, "/home/safir/"+safir_test, "makedirs=True"],
                     timeout=900, #15 min
                     expr_form="grain")
-    #self.client.cmd("os:Ubuntu", "cp.get_file",
-    #                ["salt://"+safir_dev, "/home/safir/"+safir_dev, "makedirs=True"],
-    #                timeout=900, #15 min
-    #                expr_form="grain")
+    self.client.cmd("os:Ubuntu", "cp.get_file",
+                    ["salt://"+safir_dev, "/home/safir/"+safir_dev, "makedirs=True"],
+                    timeout=900, #15 min
+                    expr_form="grain")
 
     log("   uninstalling old packages")
     self.client.cmd('os:Ubuntu', 'cmd.run',
@@ -269,7 +269,7 @@ class Executor:
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
     #self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dbg], expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
-    #self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
 
     linux_end_time=time.time()
     log("  ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
