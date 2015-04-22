@@ -193,9 +193,9 @@ class Executor:
 
   def download_from_jenkins(self):
     subprocess.call(["wget", "-nv", "-O", "/home/safir/deb.zip",
-    "http://safir-jenkins-master:8080/safir/job/Project%20Stewart/Config=Release,label=ubuntu-trusty-lts-64-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
+    "http://safir-jenkins-master:8080/safir/job/Build%20master/Config=Release,label=ubuntu-trusty-lts-64-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
     subprocess.call(["wget", "-nv", "-O",
-    "/home/safir/win.zip", "http://safir-jenkins-master:8080/safir/job/Project%20Stewart/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
+    "/home/safir/win.zip", "http://safir-jenkins-master:8080/safir/job/Build%20master/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
 
     subprocess.call(["unzip", "-o", "/home/safir/deb.zip", "-d", "/home/safir"])
     subprocess.call(["unzip", "-o", "/home/safir/win.zip", "-d", "/home/safir"])
