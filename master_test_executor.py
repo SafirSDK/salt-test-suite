@@ -231,6 +231,9 @@ class Executor:
     safir_dev="safir-sdk-core-dev.deb"
 
     log("    copying packages")
+    self.client.cmd('os:Ubuntu', 'cmd.run',
+                    ['rm -f safir-sdk-core.deb safir-sdk-core-dbg.deb safir-sdk-core-dev.deb safir-sdk-core-testsuite.deb'],
+                    expr_form="grain")
     self.client.cmd("os:Ubuntu", "cp.get_file",
                     ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
                     timeout=900, #15 min
