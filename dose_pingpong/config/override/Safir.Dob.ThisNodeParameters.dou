@@ -9,14 +9,14 @@
             <summary>Address and port of the control channel</summary>
             <name>ControlAddress</name>
             <type>String</type>
-            <value>127.0.0.1:33000</value>
+            <value>192.168.66.0:33000</value>
         </parameter>
 
         <parameter>
             <summary>Address and port of the data channel</summary>
             <name>DataAddress</name>
             <type>String</type>
-            <value>127.0.0.1:33001</value>
+            <value>192.168.66.0:33001</value>
         </parameter>
 
 	    <parameter>
@@ -24,7 +24,26 @@
             <name>Seeds</name>
             <type>String</type>
             <array>
-	            <value>127.0.0.1:44000</value>
+	            <value>192.168.66.100:33000</value>
+	            <value>192.168.66.101:33000</value>
+	            <value>192.168.66.102:33000</value>
+	            <value>192.168.66.103:33000</value>
+	            <value>192.168.66.104:33000</value>
+	            <value>192.168.66.105:33000</value>
+	            <value>192.168.66.106:33000</value>
+	            <value>192.168.66.107:33000</value>
+	            <value>192.168.66.108:33000</value>
+                <value>192.168.66.109:33000</value>
+	            <value>192.168.66.110:33000</value>
+	            <value>192.168.66.111:33000</value>
+	            <value>192.168.66.112:33000</value>
+	            <value>192.168.66.113:33000</value>
+	            <value>192.168.66.114:33000</value>
+	            <value>192.168.66.115:33000</value>
+	            <value>192.168.66.116:33000</value>
+	            <value>192.168.66.117:33000</value>
+	            <value>192.168.66.118:33000</value>
+                <value>192.168.66.119:33000</value>
             </array>
         </parameter>
 
