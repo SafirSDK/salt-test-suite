@@ -234,27 +234,27 @@ class Executor:
                     ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
                     timeout=900, #15 min
                     expr_form="grain")
-    self.client.cmd("os:Ubuntu", "cp.get_file",
-                    ["salt://"+safir_dbg, "/home/safir/"+safir_dbg, "makedirs=True"],
-                    timeout=900, #15 min
-                    expr_form="grain")
+    #self.client.cmd("os:Ubuntu", "cp.get_file",
+    #                ["salt://"+safir_dbg, "/home/safir/"+safir_dbg, "makedirs=True"],
+    #                timeout=900, #15 min
+    #                expr_form="grain")
     self.client.cmd("os:Ubuntu", "cp.get_file",
                     ["salt://"+safir_test, "/home/safir/"+safir_test, "makedirs=True"],
                     timeout=900, #15 min
                     expr_form="grain")
-    self.client.cmd("os:Ubuntu", "cp.get_file",
-                    ["salt://"+safir_dev, "/home/safir/"+safir_dev, "makedirs=True"],
-                    timeout=900, #15 min
-                    expr_form="grain")
+    #self.client.cmd("os:Ubuntu", "cp.get_file",
+    #                ["salt://"+safir_dev, "/home/safir/"+safir_dev, "makedirs=True"],
+    #                timeout=900, #15 min
+    #                expr_form="grain")
 
     log("   installing packages")
     self.client.cmd('os:Ubuntu', 'cmd.run',
                     ['sudo apt-get -y purge safir-sdk-core safir-sdk-core-dbg safir-sdk-core-testsuite safir-sdk-core-dev'],
                     expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
-    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dbg], expr_form="grain")
+    #self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dbg], expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
-    self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
+    #self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
 
     linux_end_time=time.time()
     log("  ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
