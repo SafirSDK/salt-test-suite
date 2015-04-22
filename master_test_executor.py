@@ -230,6 +230,7 @@ class Executor:
     safir_test="safir-sdk-core-testsuite.deb"
     safir_dev="safir-sdk-core-dev.deb"
 
+    log("    copying packages")
     self.client.cmd("os:Ubuntu", "cp.get_file",
                     ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
                     timeout=900, #15 min
@@ -247,10 +248,21 @@ class Executor:
     #                timeout=900, #15 min
     #                expr_form="grain")
 
-    log("   installing packages")
+    log("   uninstalling old packages")
     self.client.cmd('os:Ubuntu', 'cmd.run',
-                    ['sudo apt-get -y purge safir-sdk-core safir-sdk-core-dbg safir-sdk-core-testsuite safir-sdk-core-dev'],
+                    ['sudo apt-get -y purge safir-sdk-core'],
                     expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run',
+                    ['sudo apt-get -y purge safir-sdk-core-dbg'],
+                    expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run',
+                    ['sudo apt-get -y purge safir-sdk-core-testsuite'],
+                    expr_form="grain")
+    self.client.cmd('os:Ubuntu', 'cmd.run',
+                    ['sudo apt-get -y purge safir-sdk-core-dev'],
+                    expr_form="grain")
+
+    log("   installing packages")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
     #self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dbg], expr_form="grain")
     self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
