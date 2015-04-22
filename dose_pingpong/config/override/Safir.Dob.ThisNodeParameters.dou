@@ -32,7 +32,7 @@
             <summary>A nice name for this node</summary>
             <name>Name</name>
             <type>String</type>
-            <value>$(HOSTNAME)</value>
+            <value>Minion $(NODENUMBER)</value>
         </parameter>
 
         <parameter>
