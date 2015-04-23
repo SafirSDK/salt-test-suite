@@ -4,62 +4,11 @@
     <name>Safir.Dob.ThisNodeParameters</name>
     <baseClass>Safir.Dob.Parametrization</baseClass>
     <parameters>
-
         <parameter>
-            <summary>Address and port of the control channel</summary>
-            <name>ControlAddress</name>
-            <type>String</type>
-            <value>192.168.66.0:33000</value>
+            <summary>The node number of this node.</summary>
+            <name>NodeNumber</name>
+            <type>Int32</type>
+            <value>$(SAFIR_TEST_NODE_NUMBER)</value>
         </parameter>
-
-        <parameter>
-            <summary>Address and port of the data channel</summary>
-            <name>DataAddress</name>
-            <type>String</type>
-            <value>192.168.66.0:33001</value>
-        </parameter>
-
-	    <parameter>
-            <summary>Address and port of seed nodes control channel</summary>
-            <name>Seeds</name>
-            <type>String</type>
-            <array>
-	            <value>192.168.66.100:33000</value>
-	            <value>192.168.66.101:33000</value>
-	            <value>192.168.66.102:33000</value>
-	            <value>192.168.66.103:33000</value>
-	            <value>192.168.66.104:33000</value>
-	            <value>192.168.66.105:33000</value>
-	            <value>192.168.66.106:33000</value>
-	            <value>192.168.66.107:33000</value>
-	            <value>192.168.66.108:33000</value>
-                <value>192.168.66.109:33000</value>
-	            <value>192.168.66.110:33000</value>
-	            <value>192.168.66.111:33000</value>
-	            <value>192.168.66.112:33000</value>
-	            <value>192.168.66.113:33000</value>
-	            <value>192.168.66.114:33000</value>
-	            <value>192.168.66.115:33000</value>
-	            <value>192.168.66.116:33000</value>
-	            <value>192.168.66.117:33000</value>
-	            <value>192.168.66.118:33000</value>
-                <value>192.168.66.119:33000</value>
-            </array>
-        </parameter>
-
-        <parameter>
-            <summary>A nice name for this node</summary>
-            <name>Name</name>
-            <type>String</type>
-            <value>Minion $(NODENUMBER)</value>
-        </parameter>
-
-        <parameter>
-            <summary>Node type for this node</summary>
-            <name>NodeType</name>
-            <type>String</type>
-            <value>Server</value>
-        </parameter>
-
     </parameters>
 </class>
