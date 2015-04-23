@@ -19,7 +19,7 @@
       <summary>Use this to select which network card in a multihomed machine that will be used by dose for communication. If this is set to 0.0.0.0 the routing table will be used.</summary>
       <name>NetworkAddress</name>
       <type>String</type>
-      <value>192.0.0.0</value>
+      <value>192.168.66.0</value>
     </parameter>
     <parameter>
       <summary>The number of routing hops (TTL, time-to-live) for the Dob packets. If set to 1 all packets will stay in the subnet.</summary>
