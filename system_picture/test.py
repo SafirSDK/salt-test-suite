@@ -62,7 +62,7 @@ def run_test():
             "--nodes", str(NODES_PER_COMPUTER),
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
-            "--prev-ip", prevhostname(),
+            "--seed-ip", "minion00-test",
             "--revolutions", str(3))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
