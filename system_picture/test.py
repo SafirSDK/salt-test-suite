@@ -44,25 +44,15 @@ def mynum():
 
 def gethostname():
     hostname = socket.gethostname()
-    return hostname + "-test"
-    #return "192.168.66.1{0:02d}".format(mynum())
-
-def prevhostname():
-    num = mynum() - 1
-    if num < 0:
-        if LINUX_ONLY:
-            num = 9
-        else:
-            num = 19
-    return "minion{0:02d}-test".format(num)
-    #return "192.168.66.1{0:02d}".format(num)
+    #return hostname + "-test"
+    return "192.168.66.1{0:02d}".format(mynum())
 
 def run_test():
     args = ("--start", str(mynum() * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
-            "--seed-ip", "minion00-test",
+            "--seed-ip", "192.168.66.100",
             "--revolutions", str(3))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
