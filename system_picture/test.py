@@ -26,8 +26,8 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket
 
-NODES_PER_COMPUTER = 3
-LINUX_ONLY = True
+NODES_PER_COMPUTER = 1
+LINUX_ONLY = False
 COMPUTERS = 10 + (0 if LINUX_ONLY else 10)
 
 def log(*args, **kwargs):
