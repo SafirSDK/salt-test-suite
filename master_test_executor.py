@@ -104,15 +104,11 @@ class Executor:
 
     #find out which minions are alive
     log("Check that the minions are alive...")
-    for tries in range(0,3):
-      ping_result=self.client.cmd(self.cmd.minion_command, 'test.ping')
-      self.minions=list(ping_result.keys())
-      log("   Got response from "+str(len(self.minions))+" minions.")
-      if len(self.minions)!=20:
-        log("   Try again to wake up the non-responding minions...")
-      else:
-        log("   All minions responded!")
-        break
+    ping_result=self.client.cmd(self.cmd.minion_command, 'test.ping')
+    self.minions=list(ping_result.keys())
+    log("   Got response from "+str(len(self.minions))+" minions.")
+    if len(self.minions)!=20:
+      sys.exit(1)
 
     self.minions.sort()
 
