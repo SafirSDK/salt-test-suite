@@ -327,15 +327,21 @@ for x in range(0, 120):
     saltpath = "salt://" + abspath[len("/home/safir/"):]
     log(" - using salt path", saltpath)
 
-    res = self.client.cmd("os:Ubuntu", "cp.get_file",
-                          [saltpath, "/home/safir/"+self.cmd.test_script],
-                          expr_form="grain")
-    log("Copy test script to ubuntu minions results: ", res)
+    while True:
+      res = self.client.cmd("os:Ubuntu", "cp.get_file",
+                            [saltpath, "/home/safir/"+self.cmd.test_script],
+                            expr_form="grain")
+      if len(set(res.values())) == 1:
+        break
+      log("Copy test script to ubuntu minions failed: ", res)
 
-    res = self.client.cmd("os:Windows", "cp.get_file",
-                          [saltpath, "c:/Users/safir/"+self.cmd.test_script],
-                          expr_form="grain")
-    log("Copy test script to windows minions results: ", res)
+    while True:
+      res = self.client.cmd("os:Windows", "cp.get_file",
+                            [saltpath, "c:/Users/safir/"+self.cmd.test_script],
+                            expr_form="grain")
+      if len(set(res.values())) == 1:
+        break
+      log("Copy test script to windows minions failed: ", res)
 
   def run_test(self):
     log("Run test script on minion")
