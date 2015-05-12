@@ -328,6 +328,7 @@ for x in range(0, 120):
                             [saltpath, "/home/safir/"+self.cmd.test_script],
                             expr_form="grain")
       if len(set(res.values())) == 1:
+        log("Copy test script to ubuntu minions successful")
         break
       log("Copy test script to ubuntu minions failed: ", res)
 
@@ -336,6 +337,7 @@ for x in range(0, 120):
                             [saltpath, "c:/Users/safir/"+self.cmd.test_script],
                             expr_form="grain")
       if len(set(res.values())) == 1:
+        log("Copy test script to windows minions successful")
         break
       log("Copy test script to windows minions failed: ", res)
 
