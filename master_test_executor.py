@@ -275,7 +275,7 @@ class Executor:
     installpath=r'c:\Program Files\Safir SDK Core'
     uninstaller = installpath + r"\Uninstall.exe"
 
-    self.client.cmd('os:Windows', 'cmd.run', ['"'+uninstaller+'" /S'], expr_form="grain")
+    self.client.cmd('os:Windows', 'cmd.run', ['"'+uninstaller+'" /S'], timeout=900, expr_form="grain")
 
     snippet="""
 import os, time
@@ -284,7 +284,7 @@ for x in range(0, 120):
       break
   time.sleep(5.0)
     """
-    res=self.client.cmd("os:Windows", "cmd.exec_code", ["python", snippet], expr_form="grain")
+    res=self.client.cmd("os:Windows", "cmd.exec_code", ["python", snippet], timeout=900, expr_form="grain")
     log("   uninstall completed")
 
   def update_windows(self):
@@ -300,7 +300,9 @@ for x in range(0, 120):
                     expr_form="grain")
 
     self.client.cmd('os:Windows', 'cmd.run',
-                    ['c:\\Users\\safir\\'+safir_win+' /S /TESTSUITE'], expr_form="grain") #Add /NODEVELOPMENT before testsuite to skip dev
+                    ['c:\\Users\\safir\\'+safir_win+' /S /TESTSUITE'], #Add /NODEVELOPMENT before testsuite to skip dev
+                    timeout=900, #15 min
+                    expr_form="grain")
 
     win_end_time=time.time()
     log("  ...finished after " + str(win_end_time - win_start_time) + " seconds")
