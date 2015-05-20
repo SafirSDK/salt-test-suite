@@ -84,13 +84,11 @@ class EventHandler(threading.Thread):
 
   def run(self):
     ev=salt.utils.event.MasterEvent("/var/run/salt/master")
-    num_events=0
     for data in ev.iter_events(tag=self.event_tag):
       log("Got event from", data["id"], ":", data["data"])
       self.results[data["id"]] = data["data"]
-      num_events=num_events+1
-      if num_events==self.num_minions:
-        break
+      if len (self.results) == self.num_minions:
+          break
 
 #-----------------------------------------------------
 # Execute test
