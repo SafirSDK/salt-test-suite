@@ -24,7 +24,7 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, subprocess, sys, getopt, time, traceback, re, socket
+import os, subprocess, sys, getopt, time, traceback, re, socket, time
 
 NODES_PER_COMPUTER = 1
 LINUX_ONLY = False
@@ -77,8 +77,10 @@ def main():
     except Exception as e:
       log ("Caught exception: " + str(e))
 
-    #do we need this?
-    subprocess.check_output(["salt-call", "event.fire_master", str(success), "safir_test"], stderr=subprocess.STDOUT)
+    #send the event multiple times, to reduce risk of it getting lost
+    for i in range(10):
+        subprocess.check_output(["salt-call", "event.fire_master", str(success), "safir_test"], stderr=subprocess.STDOUT)
+        time.sleep(0.5)
 
     if success:
       log("Test was successful")
