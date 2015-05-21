@@ -85,8 +85,9 @@ class EventHandler(threading.Thread):
   def run(self):
     ev=salt.utils.event.MasterEvent("/var/run/salt/master")
     for data in ev.iter_events(tag=self.event_tag):
-      log("Got event from", data["id"], ":", data["data"])
-      self.results[data["id"]] = data["data"]
+      if data["id"] not in self.results:
+        log("Got event from", data["id"], ":", data["data"])
+        self.results[data["id"]] = data["data"]
       if len (self.results) == self.num_minions:
           break
 
