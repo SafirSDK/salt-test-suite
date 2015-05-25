@@ -26,8 +26,8 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket, time
 
-NODES_PER_COMPUTER = 2
-LINUX_ONLY = False
+NODES_PER_COMPUTER = 1
+LINUX_ONLY = True
 COMPUTERS = 10 + (0 if LINUX_ONLY else 10)
 
 def log(*args, **kwargs):
@@ -68,6 +68,9 @@ def run_test():
         raise TestFailure("circular_restart.py failed")
 
 def main():
+    startdelay = mynum() * 5
+    log("Sleeping", startdelay, "seconds before starting test apps")
+    time.sleep(startdelay)
     success = False
     try:
       run_test()
