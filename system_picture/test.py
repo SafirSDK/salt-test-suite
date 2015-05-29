@@ -42,7 +42,7 @@ class TestFailure(Exception):
 def mynum():
     num = re.match(r"minion([0-9][0-9])",socket.gethostname()).group(1)
     if WINDOWS_ONLY:
-        return max(0, int(num) - 10)
+        return int(num) - 10
     else:
         return int(num)
 
@@ -57,7 +57,8 @@ def seedip():
     else:
         return "192.168.66.100"
 def run_test():
-    args = ("--start", str(mynum() * NODES_PER_COMPUTER),
+    num = mynum() - (10 if WINDOWS_ONLY else 0)
+    args = ("--start", str(num * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
@@ -65,14 +66,8 @@ def run_test():
             "--revolutions", str(3))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
-        if LINUX_ONLY:
-            log("not running on windows")
-            return
         ret = subprocess.call(("circular_restart.py",) + args, shell = True)
     else:
-        if WINDOWS_ONLY:
-            log("not running on linux")
-            return
         ret = subprocess.call(("circular_restart",) + args)
 
     log("circular_restart.py exited with code", ret)
@@ -80,7 +75,17 @@ def run_test():
         raise TestFailure("circular_restart.py failed")
 
 def main():
-    startdelay = mynum() * 10
+    if sys.platform == "win32":
+        if LINUX_ONLY:
+            log("not running on windows")
+            return
+    else:
+        if WINDOWS_ONLY:
+            log("not running on linux")
+            return
+
+    startdelay = max(0,mynum()-(10 if WINDOWS_ONLY else 0)) * 10
+
     log("Sleeping", startdelay, "seconds before starting test apps")
     time.sleep(startdelay)
     success = False
