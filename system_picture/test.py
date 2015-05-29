@@ -57,6 +57,15 @@ def seedip():
     else:
         return "192.168.66.100"
 def run_test():
+    if sys.platform == "win32":
+        if LINUX_ONLY:
+            log("not running on windows")
+            return
+    else:
+        if WINDOWS_ONLY:
+            log("not running on linux")
+            return
+
     num = mynum() - (10 if WINDOWS_ONLY else 0)
     args = ("--start", str(num * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
@@ -75,15 +84,6 @@ def run_test():
         raise TestFailure("circular_restart.py failed")
 
 def main():
-    if sys.platform == "win32":
-        if LINUX_ONLY:
-            log("not running on windows")
-            return
-    else:
-        if WINDOWS_ONLY:
-            log("not running on linux")
-            return
-
     startdelay = max(0,mynum()-(10 if WINDOWS_ONLY else 0)) * 10
 
     log("Sleeping", startdelay, "seconds before starting test apps")
