@@ -41,10 +41,7 @@ class TestFailure(Exception):
 
 def mynum():
     num = re.match(r"minion([0-9][0-9])",socket.gethostname()).group(1)
-    if WINDOWS_ONLY:
-        return int(num) - 10
-    else:
-        return int(num)
+    return int(num)
 
 def gethostname():
     hostname = socket.gethostname()
