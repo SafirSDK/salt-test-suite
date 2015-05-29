@@ -26,9 +26,10 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket, time
 
-NODES_PER_COMPUTER = 4
-LINUX_ONLY = True
-COMPUTERS = 10 + (0 if LINUX_ONLY else 10)
+NODES_PER_COMPUTER = 1
+LINUX_ONLY = False
+WINDOWS_ONLY = True
+COMPUTERS = 10 + (0 if LINUX_ONLY or WINDOWS_ONLY else 10)
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
@@ -40,19 +41,27 @@ class TestFailure(Exception):
 
 def mynum():
     num = re.match(r"minion([0-9][0-9])",socket.gethostname()).group(1)
-    return int(num)
+    if WINDOWS_ONLY:
+        return int(num) - 10
+    else:
+        return int(num)
 
 def gethostname():
     hostname = socket.gethostname()
     #return hostname + "-test"
     return "192.168.66.1{0:02d}".format(mynum())
 
+def seedip():
+    if WINDOWS_ONLY:
+        return "192.168.66.110"
+    else:
+        return "192.168.66.100"
 def run_test():
     args = ("--start", str(mynum() * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
-            "--seed-ip", "192.168.66.100",
+            "--seed-ip", seedip(),
             "--revolutions", str(3))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
@@ -61,6 +70,9 @@ def run_test():
             return
         ret = subprocess.call(("circular_restart.py",) + args, shell = True)
     else:
+        if WINDOWS_ONLY:
+            log("not running on linux")
+            return
         ret = subprocess.call(("circular_restart",) + args)
 
     log("circular_restart.py exited with code", ret)
