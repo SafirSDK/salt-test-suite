@@ -26,7 +26,7 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket, time
 
-NODES_PER_COMPUTER = 1
+NODES_PER_COMPUTER = 2
 LINUX_ONLY = False
 WINDOWS_ONLY = True
 COMPUTERS = 10 + (0 if LINUX_ONLY or WINDOWS_ONLY else 10)
@@ -53,6 +53,7 @@ def seedip():
         return "192.168.66.110"
     else:
         return "192.168.66.100"
+
 def run_test():
     if sys.platform == "win32":
         if LINUX_ONLY:
