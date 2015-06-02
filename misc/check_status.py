@@ -23,7 +23,7 @@
 # along with Safir SDK Core.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-import subprocess,sys,json
+import subprocess,sys,json,re
 
 output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
 
@@ -32,7 +32,21 @@ if output.find("minion") != -1:
     print ("At least one node is down!")
     sys.exit(1)
 
-output = subprocess.check_output(("salt", "--out=json", "--static", "*", "cmd.run", "safir_show_config --revision"))
-print (output)
+output = subprocess.check_output(("salt", "--out=json", "--static", "*", "cmd.run", "safir_show_config --revision")).decode("utf-8")
 
+pattern = re.compile(r"Safir SDK Core Git revision: (.*)")
+
+revisions = set()
+for minion,s in json.loads(output).items():
+    match = pattern.match(s)
+    if match is None:
+        print("No revision found for",minion)
+        sys.exit(1)
+    else:
+        print (minion, "has revision", match.group(1))
+        revisions.add(match.group(1))
+
+if len(revisions) != 1:
+    print("revisions differ between minions")
+    sys.exit(1)
 sys.exit(0)
