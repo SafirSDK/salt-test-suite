@@ -23,7 +23,7 @@
 # along with Safir SDK Core.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-import subprocess,sys
+import subprocess,sys,json
 
 output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
 
@@ -31,5 +31,8 @@ print(output)
 if output.find("minion") != -1:
     print ("At least one node is down!")
     sys.exit(1)
-else:
-    sys.exit(0)
+
+output = subprocess.check_output(("salt", "--out=json", "--static", "*", "cmd.run", "safir_show_config --revision"))
+print (output)
+
+sys.exit(0)
