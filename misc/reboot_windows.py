@@ -45,7 +45,7 @@ needed = set(["minion10","minion11","minion12","minion13","minion14","minion15",
 while (True):
     output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
 
-    needed = needed - output.splitlines()
+    needed = needed - set(output.splitlines())
     if len(needed) == 0:
         log("All windows nodes appear to have gone away, as expected")
         break
