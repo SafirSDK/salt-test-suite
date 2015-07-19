@@ -25,14 +25,28 @@
 ###############################################################################
 import subprocess,sys,json,re, time
 
+def log(*args, **kwargs):
+    print(*args, **kwargs)
+    sys.stdout.flush()
+
+output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
+
+if output.find("minion1") != -1:
+    log ("At least one windows node is down:")
+    log (output)
+    log ("Will reboot the others, though.")
+else:
+    log ("All windows nodes appear to be up. Will reboot them!")
+
 subprocess.check_output(("salt", "-N", "win", "system.reboot"))
 
 #first wait for one node to go away
 while (True):
     output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
 
+    log("Looking for a rebooting windows node")
     if output.find("minion1") != -1:
-        print ("At least one windows node is down, as expected")
+        log ("At least one windows node is down, as expected")
         break
     time.sleep(1)
 
@@ -40,9 +54,14 @@ while (True):
 while (True):
     output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
 
+    log("Checking if all windows nodes are up again.")
+
     if output.find("minion1") == -1:
-        print ("No windows nodes down!")
+        log ("No windows nodes down!")
         break
+    else:
+        log( "Nodes that are down:")
+        log(output)
     time.sleep(1)
 
 sys.exit(0)
