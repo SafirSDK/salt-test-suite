@@ -25,13 +25,6 @@
 ###############################################################################
 import subprocess,sys,json,re, time
 
-output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
-
-print(output)
-if output.find("minion") != -1:
-    print ("At least one node is down!")
-    sys.exit(1)
-
 subprocess.check_output(("salt", "-N", "win", "system.reboot"))
 
 #first wait for one node to go away
@@ -48,7 +41,7 @@ while (True):
     output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
 
     if output.find("minion1") == -1:
-        print ("No nodes down!")
+        print ("No windows nodes down!")
         break
     time.sleep(1)
 
