@@ -327,6 +327,7 @@ for x in range(0, 120):
     while True:
       res = self.client.cmd("os:Ubuntu", "cp.get_file",
                             [saltpath, "/home/safir/"+self.cmd.test_script],
+                            timeout=900, #15 min
                             expr_form="grain")
       if len(set(res.values())) == 1:
         log("Copy test script to ubuntu minions successful")
@@ -336,6 +337,7 @@ for x in range(0, 120):
     while True:
       res = self.client.cmd("os:Windows", "cp.get_file",
                             [saltpath, "c:/Users/safir/"+self.cmd.test_script],
+                            timeout=900, #15 min
                             expr_form="grain")
       if len(set(res.values())) == 1:
         log("Copy test script to windows minions successful")
