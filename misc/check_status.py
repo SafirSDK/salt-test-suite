@@ -32,11 +32,14 @@ if output.find("minion") != -1:
     print ("At least one node is down!")
     sys.exit(1)
 
-output = subprocess.check_output(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision")).decode("utf-8").replace("\n}",",").replace("{","")
+output = subprocess.check_output(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision")).decode("utf-8")
 
-output = "{" + output + "}"
+#due to bugs in salt I had to remove --static above, and fake all the output into a
+#single json object like this. If --static starts working again it should just be a
+#matter of readding it above and removing these two lines.
+output = "{" + output.replace("\n}",",").replace("{","") + "}"
 output = output.replace(",\n}","\n}")
-print(output)
+
 
 pattern = re.compile(r"Safir SDK Core Git revision: (.*)")
 
