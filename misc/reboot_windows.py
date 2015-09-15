@@ -43,7 +43,7 @@ subprocess.check_output(("salt", "-N", "win", "system.reboot"))
 #first wait for all windows nodes to go away
 needed = set(["minion10","minion11","minion12","minion13","minion14","minion15","minion16","minion17","minion18","minion19"])
 while (True):
-    output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
+    output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8").replace("- ","")
 
     needed = needed - set(output.splitlines())
     if len(needed) == 0:
