@@ -33,6 +33,8 @@ if output.find("minion") != -1:
     sys.exit(1)
 
 output = subprocess.check_output(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision")).decode("utf-8").replace("\n}",",").replace("{","")
+
+output = "{" + output + "}"
 print(output)
 
 pattern = re.compile(r"Safir SDK Core Git revision: (.*)")
