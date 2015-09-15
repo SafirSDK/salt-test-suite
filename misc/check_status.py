@@ -32,7 +32,8 @@ if output.find("minion") != -1:
     print ("At least one node is down!")
     sys.exit(1)
 
-output = subprocess.check_output(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision")).decode("utf-8")
+output = subprocess.check_output(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision")).decode("utf-8").replace("\n}",",").replace("{","")
+
 
 pattern = re.compile(r"Safir SDK Core Git revision: (.*)")
 
