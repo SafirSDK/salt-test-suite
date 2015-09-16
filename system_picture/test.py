@@ -26,6 +26,9 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket, time
 
+subprocess.check_output(["salt-call", "event.fire_master", "True", "safir_test"], stderr=subprocess.STDOUT)
+sys.exit(0)
+
 NODES_PER_COMPUTER = 1
 LINUX_ONLY = False
 WINDOWS_ONLY = False
