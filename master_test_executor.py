@@ -424,11 +424,11 @@ for x in range(0, 120):
 
     minionOutputs = dict()
     log("Collecting output from Linux minions")
-    for r in self.client.get_cli_returns(self.linux_jid, minions=set()):
+    for r in self.client.get_cli_returns(self.linux_jid, minions=set(),tgt="linux", tgt_type="nodegroup"):
       minionOutputs.update(r)
 
     log("Collecting output from Windows minions")
-    for r in self.client.get_cli_returns(self.windows_jid, minions=set()):
+    for r in self.client.get_cli_returns(self.windows_jid, minions=set(),tgt="win", tgt_type="nodegroup"):
       log("got ", r)
       minionOutputs.update(r)
 
