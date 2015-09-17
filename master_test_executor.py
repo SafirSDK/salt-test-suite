@@ -338,7 +338,7 @@ for x in range(0, 120):
                                          expr_form="compound")
 
   def collect_result(self):
-    log("Collect result")
+    log("Collecting result files from minions")
     self.client.cmd("G@os:Ubuntu and "+self.cmd.minion_command,
                     "cp.push",
                     ["/home/safir/result.txt"],
@@ -366,7 +366,7 @@ for x in range(0, 120):
             os.remove(src_file)
             file_found=True
       if not file_found:
-        log("Found no result file for "+m)
+        log(" - Found no result file for "+m)
 
 
   def run(self):
@@ -392,9 +392,8 @@ for x in range(0, 120):
     self.upload_test()
     self.run_test()
 
-
     minionResults = dict()
-    log("Collecting output from Linux minions")
+    log("Collecting results from minions")
     for r in self.cmd_iter:
       minionResults.update(r)
 
