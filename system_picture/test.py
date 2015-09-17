@@ -37,8 +37,10 @@ def log(*args, **kwargs):
 
 
 log("tjolahej tjolahopp")
-subprocess.check_output(["salt-call", "event.fire_master", "True", "safir_test"], stderr=subprocess.STDOUT)
-sys.exit(1)
+subprocess.check_output(["salt-call", "event.fire_master", "True", "safir_test"],
+                        stderr=subprocess.STDOUT,
+                        shell=sys.platform=="win32")
+sys.exit(0)
 
 
 class TestFailure(Exception):
