@@ -32,6 +32,8 @@ def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
 
+class InternalError (Exception):
+    pass
 #-----------------------------------------------------
 # Parse command line
 #-----------------------------------------------------
@@ -321,7 +323,7 @@ for x in range(0, 120):
 
     if not abspath.startswith("/home/safir/") or not os.path.isfile(abspath):
         log("Uh oh! Strange script path")
-        raise Exception("Failed to find test script")
+        raise InternalError("Failed to find test script")
     saltpath = "salt://" + abspath[len("/home/safir/"):]
     log(" - using salt path", saltpath)
 
@@ -448,7 +450,7 @@ def main():
     ex=Executor()
     res = ex.run()
     return 0 if res else 1
-  except Exception as e:
+  except InternalError as e:
     log ("Caught exception: " + str(e))
     return 1
   log("--- Finished! ---")
