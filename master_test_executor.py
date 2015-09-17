@@ -424,7 +424,7 @@ for x in range(0, 120):
 
     minionOutputs = dict()
     log("Collecting output from Linux minions")
-    for r in self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"):
+    for r in self.client.get_cli_returns(self.linux_jid, tgt="linux", expr_form="nodegroup"):
       log("Got:", r)
     #  minionOutputs.update(r)
 
