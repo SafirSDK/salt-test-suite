@@ -424,11 +424,29 @@ for x in range(0, 120):
 
     minionOutputs = dict()
     log("Collecting output from Linux minions")
-    for r in self.client.get_cli_returns(self.linux_jid, minions=set(),tgt="linux", tgt_type="nodegroup"):
+    for r in self.client.get_cli_returns(self.linux_jid, minions=set(("minion00",
+                                                                      "minion01",
+                                                                      "minion02",
+                                                                      "minion03",
+                                                                      "minion04",
+                                                                      "minion05",
+                                                                      "minion06",
+                                                                      "minion07",
+                                                                      "minion08",
+                                                                      "minion09"))):
       minionOutputs.update(r)
 
     log("Collecting output from Windows minions")
-    for r in self.client.get_cli_returns(self.windows_jid, minions=set(),tgt="win", tgt_type="nodegroup"):
+    for r in self.client.get_cli_returns(self.windows_jid, minions=set(("minion10",
+                                                                        "minion11",
+                                                                        "minion12",
+                                                                        "minion13",
+                                                                        "minion14",
+                                                                        "minion15",
+                                                                        "minion16",
+                                                                        "minion17",
+                                                                        "minion18",
+                                                                        "minion19"))):
       log("got ", r)
       minionOutputs.update(r)
 
