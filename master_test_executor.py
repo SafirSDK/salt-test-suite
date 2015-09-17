@@ -393,7 +393,7 @@ for x in range(0, 120):
     self.run_test()
 
     minionResults = dict()
-    log("Collecting results from minions")
+    log("Waiting for results from minions")
     for r in self.cmd_iter:
       minionResults.update(r)
 

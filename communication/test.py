@@ -85,11 +85,9 @@ def main():
   elif sys.platform.lower().startswith('win'):
     windows_main()
 
-  #signal that we are done
-  subprocess.check_output(["salt-call", "event.fire_master", str(True), "safir_test"], stderr=subprocess.STDOUT)
-
 #------------------------------------------------
 # If this is the main module, start the program
 #------------------------------------------------
 if __name__ == "__main__":
   main()
+  sys.exit(0)
