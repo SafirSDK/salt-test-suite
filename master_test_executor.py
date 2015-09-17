@@ -425,18 +425,18 @@ for x in range(0, 120):
     minionOutputs = dict()
     log("Collecting output from Linux minions")
     for r in self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"):
-      log(r)
+      log("Got:", r)
     #  minionOutputs.update(r)
 
-    log("Collecting output from Windows minions")
-    for r in self.client.get_cli_returns(self.windows_jid, "G@os:Windows"):
-      minionOutputs.update(r)
+    #log("Collecting output from Windows minions")
+    #for r in self.client.get_cli_returns(self.windows_jid, "G@os:Windows"):
+    #  minionOutputs.update(r)
 
     aggregateResult = True
     for minion in sorted(event_handler.results):
       result = event_handler.results[minion]
-      log("===============", minion, "returned", result, "== Output: ===============")
-      log(minionOutputs[minion]["ret"])
+      #log("===============", minion, "returned", result, "== Output: ===============")
+      #log(minionOutputs[minion]["ret"])
       aggregateResult = result and aggregateResult
 
     #If we received a test finished event then collect the result
