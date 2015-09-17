@@ -390,7 +390,7 @@ for x in range(0, 120):
             os.remove(src_file)
             file_found=True
       if not file_found:
-        log("Found no result for "+m)
+        log("Found no result file for "+m)
 
 
   def run(self):
