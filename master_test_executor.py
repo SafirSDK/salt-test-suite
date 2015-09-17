@@ -446,7 +446,8 @@ for x in range(0, 120):
                                                                         "minion16",
                                                                         "minion17",
                                                                         "minion18",
-                                                                        "minion19"))):
+                                                                        "minion19")),
+                                         timeout = 100):
       log("got ", r)
       minionOutputs.update(r)
 
