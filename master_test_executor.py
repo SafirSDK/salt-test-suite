@@ -351,12 +351,12 @@ for x in range(0, 120):
 
     node_count=str(len(self.minions))
 
-    self.linux_jid = self.client.cmd_async("G@os:Ubuntu and "+self.cmd.minion_command,
+    self.linux_cmd_iter = self.client.cmd_iter("G@os:Ubuntu and "+self.cmd.minion_command,
                                            "cmd.run",
                                            ["python /home/safir/"+self.cmd.test_script+" --node-count "+node_count],
                                            expr_form="compound")
 
-    self.windows_jid = self.client.cmd_async("G@os:Windows and "+self.cmd.minion_command,
+    self.windows_cmd_iter = self.client.cmd_iter("G@os:Windows and "+self.cmd.minion_command,
                                              "cmd.run",
                                              ["python c:\\Users\\safir\\"+self.cmd.test_script+" --node-count "+node_count],
                                              expr_form="compound")
@@ -424,10 +424,12 @@ for x in range(0, 120):
 
     minionOutputs = dict()
     log("Collecting output from Linux minions")
-    for r in self.client.get_cli_returns(self.linux_jid, minions=set(),tgt="linux", tgt_type="nodegroup", timeout=100):
-      minionOutputs.update(r)
+    for r in self.linux_cmd_iter:
+      log("got",r)
+    #for r in self.client.get_cli_returns(self.linux_jid, minions=set(),tgt="linux", tgt_type="nodegroup", timeout=100):
+    #  minionOutputs.update(r)
 
-    winmin = ("minion10",
+    #winmin = ("minion10",
                "minion11",
                "minion12",
                "minion13",
@@ -437,7 +439,7 @@ for x in range(0, 120):
                "minion17",
                "minion18",
                "minion19")
-    log("Collecting output from Windows minions")
+    #log("Collecting output from Windows minions")
     #for r in self.client.get_cli_returns(self.windows_jid, minions=set(),tgt="win", tgt_type="nodegroup", timeout=100):
     #  log("got ", r)
     #  minionOutputs.update(r)
@@ -445,8 +447,8 @@ for x in range(0, 120):
     #  r = list(self.client.get_cli_returns(self.windows_jid, set(m)))
     #  log("got ", m , ":", r)
     #  minionOutputs.update(r)
-    for r in self.client.get_event_iter_returns(self.windows_jid, minions=set(winmin)):
-      log("got ", r)
+    #for r in self.client.get_event_iter_returns(self.windows_jid, minions=set(winmin)):
+    #  log("got ", r)
 
     aggregateResult = True
     for minion in sorted(event_handler.results):
