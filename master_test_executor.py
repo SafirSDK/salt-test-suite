@@ -421,6 +421,7 @@ for x in range(0, 120):
     log("Collecting output from Linux minions")
     for r in self.cmd_iter:
       log("got",r)
+      minionOutputs.update(r)
     #for r in self.client.get_cli_returns(self.linux_jid, minions=set(),tgt="linux", tgt_type="nodegroup", timeout=100):
     #  minionOutputs.update(r)
 
