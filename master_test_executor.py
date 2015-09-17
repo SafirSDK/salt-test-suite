@@ -73,25 +73,6 @@ class CommandLine:
       self.minion_command=args[0]
       for a in args[1:]:
         self.minion_command=self.minion_command+" "+a
-#-----------------------------------------------------
-# EventHandler - handle when minions are ready
-#-----------------------------------------------------
-class EventHandler(threading.Thread):
-  def __init__(self, num_minions):
-    threading.Thread.__init__(self)
-    self.event_tag="safir_test"
-    self.received=False
-    self.num_minions=num_minions
-    self.results = dict()
-
-  def run(self):
-    ev=salt.utils.event.MasterEvent("/var/run/salt/master")
-    for data in ev.iter_events(tag=self.event_tag):
-      if data["id"] not in self.results:
-        log("Got event from", data["id"], ":", str(data["data"]))
-        self.results[data["id"]] = data["data"]
-      if len (self.results) == self.num_minions:
-          break
 
 #-----------------------------------------------------
 # Execute test
@@ -407,54 +388,23 @@ for x in range(0, 120):
       self.sync_safir()
       return True
 
-    #Start a thread that handles the event when minion has finished the test case
-    event_handler=EventHandler(len(self.minions))
-    event_handler.start()
 
     self.upload_test()
     self.run_test()
 
-    #log("Wait for finished signal from the minions")
-    #event_handler.join()
 
-    minionOutputs = dict()
+    minionResults = dict()
     log("Collecting output from Linux minions")
     for r in self.cmd_iter:
-      log("got",r)
-      minionOutputs.update(r)
-    #for r in self.client.get_cli_returns(self.linux_jid, minions=set(),tgt="linux", tgt_type="nodegroup", timeout=100):
-    #  minionOutputs.update(r)
-
-    #winmin = ("minion10",
-               # "minion11",
-               # "minion12",
-               # "minion13",
-               # "minion14",
-               # "minion15",
-               # "minion16",
-               # "minion17",
-               # "minion18",
-               # "minion19")
-    #log("Collecting output from Windows minions")
-    #for r in self.client.get_cli_returns(self.windows_jid, minions=set(),tgt="win", tgt_type="nodegroup", timeout=100):
-    #  log("got ", r)
-    #  minionOutputs.update(r)
-    #for m in winmin:
-    #  r = list(self.client.get_cli_returns(self.windows_jid, set(m)))
-    #  log("got ", m , ":", r)
-    #  minionOutputs.update(r)
-    #for r in self.client.get_event_iter_returns(self.windows_jid, minions=set(winmin)):
-    #  log("got ", r)
-
-    log("Wait for finished signal from the minions")
-    event_handler.join()
+      minionResults.update(r)
 
     aggregateResult = True
-    for minion in sorted(event_handler.results):
-      result = event_handler.results[minion]
-      log("===============", minion, "returned", result, "== Output: ===============")
-      log(minionOutputs[minion]["ret"])
-      aggregateResult = result and aggregateResult
+    for minion,result in sorted(minionResults.items()):
+      retcode = result["retcode"]
+      output = result["ret"]
+      log("===============", minion, "returned", retcode, "== Output: ===============")
+      log(output)
+      aggregateResult = (retcode == 0) and aggregateResult
 
     #If we received a test finished event then collect the result
     self.collect_result()
