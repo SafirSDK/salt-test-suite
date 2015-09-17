@@ -91,7 +91,6 @@ class EventHandler(threading.Thread):
         log("Got event from", data["id"], ":", str(data["data"]))
         self.results[data["id"]] = data["data"]
       if len (self.results) == self.num_minions:
-          log(self.results)
           break
 
 #-----------------------------------------------------
@@ -425,8 +424,10 @@ for x in range(0, 120):
 
     minionOutputs = dict()
     log("Collecting output from Linux minions")
-    for r in self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"):
-      minionOutputs.update(r)
+    log(self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"))
+    log(self.client.get_cli_returns(self.linux_jid))
+    #for r in self.client.get_cli_returns(self.linux_jid, "G@os:Ubuntu"):
+    #  minionOutputs.update(r)
 
     log("Collecting output from Windows minions")
     for r in self.client.get_cli_returns(self.windows_jid, "G@os:Windows"):
