@@ -419,8 +419,8 @@ for x in range(0, 120):
     self.upload_test()
     self.run_test()
 
-    log("Wait for finished signal from the minions")
-    event_handler.join()
+    #log("Wait for finished signal from the minions")
+    #event_handler.join()
 
     minionOutputs = dict()
     log("Collecting output from Linux minions")
