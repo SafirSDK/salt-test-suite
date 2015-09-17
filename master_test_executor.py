@@ -427,10 +427,24 @@ for x in range(0, 120):
     for r in self.client.get_cli_returns(self.linux_jid, minions=set(),tgt="linux", tgt_type="nodegroup", timeout=100):
       minionOutputs.update(r)
 
+    winmin = ("minion10",
+               "minion11",
+               "minion12",
+               "minion13",
+               "minion14",
+               "minion15",
+               "minion16",
+               "minion17",
+               "minion18",
+               "minion19")
     log("Collecting output from Windows minions")
-    for r in self.client.get_cli_returns(self.windows_jid, minions=set(),tgt="win", tgt_type="nodegroup", timeout=100):
-      log("got ", r)
-      minionOutputs.update(r)
+    #for r in self.client.get_cli_returns(self.windows_jid, minions=set(),tgt="win", tgt_type="nodegroup", timeout=100):
+    #  log("got ", r)
+    #  minionOutputs.update(r)
+    for m in winmin:
+      r = self.client.get_cli_returns(self.windows_jid, set(m))
+      log("got ", m , ":", r)
+    #  minionOutputs.update(r)
 
     aggregateResult = True
     for minion in sorted(event_handler.results):
