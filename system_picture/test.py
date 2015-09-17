@@ -26,9 +26,6 @@
 from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket, time
 
-subprocess.check_output(["salt-call", "event.fire_master", "True", "safir_test"], stderr=subprocess.STDOUT)
-sys.exit(0)
-
 NODES_PER_COMPUTER = 1
 LINUX_ONLY = False
 WINDOWS_ONLY = False
@@ -37,6 +34,12 @@ COMPUTERS = 10 + (0 if LINUX_ONLY or WINDOWS_ONLY else 10)
 def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
+
+
+log("tjolahej tjolahopp")
+subprocess.check_output(["salt-call", "event.fire_master", "True", "safir_test"], stderr=subprocess.STDOUT)
+sys.exit(0)
+
 
 class TestFailure(Exception):
     pass
