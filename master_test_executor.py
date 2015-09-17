@@ -362,7 +362,7 @@ for x in range(0, 120):
     #                                         expr_form="compound")
     self.linux_cmd_iter = self.client.cmd_iter(self.cmd.minion_command,
                                                "cmd.run",
-                                               (self.cmd.test_script,), #+" --node-count "+node_count],
+                                               ("./" + self.cmd.test_script,), #+" --node-count "+node_count],
                                                expr_form="compound")
 
   def collect_result(self):
@@ -453,6 +453,9 @@ for x in range(0, 120):
     #  minionOutputs.update(r)
     #for r in self.client.get_event_iter_returns(self.windows_jid, minions=set(winmin)):
     #  log("got ", r)
+
+    log("Wait for finished signal from the minions")
+    event_handler.join()
 
     aggregateResult = True
     for minion in sorted(event_handler.results):
