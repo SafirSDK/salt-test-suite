@@ -36,13 +36,6 @@ def log(*args, **kwargs):
     sys.stdout.flush()
 
 
-log("tjolahej tjolahopp")
-subprocess.check_output(["salt-call", "event.fire_master", "True", "safir_test"],
-                        stderr=subprocess.STDOUT,
-                        shell=sys.platform=="win32")
-sys.exit(0)
-
-
 class TestFailure(Exception):
     pass
 
@@ -103,19 +96,15 @@ def main():
     except Exception as e:
       log ("Caught exception: " + str(e))
 
-    #send the event multiple times, to reduce risk of it getting lost
-    for i in range(10):
-        subprocess.check_output(["salt-call", "event.fire_master", str(success), "safir_test"], stderr=subprocess.STDOUT)
-        time.sleep(0.5)
-
     if success:
       log("Test was successful")
+      return 0
     else:
       log("Test failed")
+      return 1
 
 #------------------------------------------------
 # If this is the main module, start the program
 #------------------------------------------------
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    sys.exit(main())
