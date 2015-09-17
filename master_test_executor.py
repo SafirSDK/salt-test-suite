@@ -351,15 +351,19 @@ for x in range(0, 120):
 
     node_count=str(len(self.minions))
 
-    self.linux_cmd_iter = self.client.cmd_iter("G@os:Ubuntu and "+self.cmd.minion_command,
-                                           "cmd.run",
-                                           ["python /home/safir/"+self.cmd.test_script+" --node-count "+node_count],
-                                           expr_form="compound")
+    #self.linux_cmd_iter = self.client.cmd_iter("G@os:Ubuntu and "+self.cmd.minion_command,
+    #                                       "cmd.run",
+    #                                       ["python /home/safir/"+self.cmd.test_script+" --node-count "+node_count],
+    #                                       expr_form="compound")
 
-    self.windows_cmd_iter = self.client.cmd_iter("G@os:Windows and "+self.cmd.minion_command,
-                                             "cmd.run",
-                                             ["python c:\\Users\\safir\\"+self.cmd.test_script+" --node-count "+node_count],
-                                             expr_form="compound")
+    #self.windows_cmd_iter = self.client.cmd_iter("G@os:Windows and "+self.cmd.minion_command,
+    #                                         "cmd.run",
+    #                                         ["python c:\\Users\\safir\\"+self.cmd.test_script+" --node-count "+node_count],
+    #                                         expr_form="compound")
+    self.linux_cmd_iter = self.client.cmd_iter(self.cmd.minion_command,
+                                               "cmd.run",
+                                               (self.cmd.test_script,), #+" --node-count "+node_count],
+                                               expr_form="compound")
 
   def collect_result(self):
     log("Collect result")
