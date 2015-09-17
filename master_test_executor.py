@@ -362,7 +362,7 @@ for x in range(0, 120):
     #                                         expr_form="compound")
     self.linux_cmd_iter = self.client.cmd_iter(self.cmd.minion_command,
                                                "cmd.run",
-                                               ("python", self.cmd.test_script,), #+" --node-count "+node_count],
+                                               ("python " + self.cmd.test_script,), #+" --node-count "+node_count],
                                                expr_form="compound")
 
   def collect_result(self):
