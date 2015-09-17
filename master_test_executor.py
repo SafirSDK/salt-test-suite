@@ -429,6 +429,7 @@ for x in range(0, 120):
 
     log("Collecting output from Windows minions")
     for r in self.client.get_cli_returns(self.windows_jid, minions=set()):
+      log("got ", r)
       minionOutputs.update(r)
 
     aggregateResult = True
