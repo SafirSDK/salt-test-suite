@@ -445,7 +445,7 @@ for x in range(0, 120):
     #  r = list(self.client.get_cli_returns(self.windows_jid, set(m)))
     #  log("got ", m , ":", r)
     #  minionOutputs.update(r)
-    for r in self.client.get_event_iter_returns(self.windows_jid, minions=set()):
+    for r in self.client.get_event_iter_returns(self.windows_jid, minions=set(winmin)):
       log("got ", r)
 
     aggregateResult = True
