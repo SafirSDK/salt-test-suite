@@ -6,7 +6,7 @@ from socket import gethostname
 server_minion = "minion13"
 #node_type = "nt1" #nt0 has no multicast, nt1 and nt2 is multicast enabled
 node_count = 20
-message_count = 10000 #number of messages to send from server to clients
+message_count = 100000 #number of messages to send from server to clients
 message_size = 1400 #message size in bytes
 
 def ip_address(host_name):
