@@ -49,22 +49,16 @@ def main():
     if o=="--node-count":
       node_count=int(a)
 
-  success = False
+  ret = 1
   try:
-    subprocess.call(communication_test_cmd(),
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                    shell = sys.platform == "win32")
-    success = True
+    ret = subprocess.call(communication_test_cmd(),
+                          shell = sys.platform == "win32")
   except getopt.GetoptError as err:
     print(err)
   except:
     print("Exception:", traceback.print_exc())
 
-  if success:
-    return 0
-  else:
-    return 1
+  return ret
 
 #------------------------------------------------
 # If this is the main module, start the program
