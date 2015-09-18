@@ -4,9 +4,9 @@ import os, subprocess, sys, getopt, time, traceback
 from socket import gethostname
 
 server_minion = "minion13"
-node_type = "nt1" #nt0 has no multicast, nt1 and nt2 is multicast enabled
+node_type = "nt0" #nt0 has no multicast, nt1 and nt2 is multicast enabled
 node_count = 20
-message_count = 100000 #number of messages to send from server to clients
+message_count = 10000 #number of messages to send from server to clients
 message_size = 1400 #message size in bytes
 
 def ip_address(host_name):
@@ -41,35 +41,6 @@ def communication_test_cmd():
             "--size", str(message_size),
             "--thread-count", "2"]
 
-def linux_main():
-  success = False
-  try:
-    f=open("/home/safir/result.txt", "w")
-    subprocess.call(communication_test_cmd(), stdout=f, stderr=f)
-    success = True
-  except getopt.GetoptError as err:
-    f.write(err)
-  except:
-    f.write("Exception: "+traceback.print_exc())
-
-  f.flush()
-  f.close()
-  return success
-
-def windows_main():
-  success = False
-  try:
-    f=open("c:\\Users\\safir\\result.txt", "w")
-    subprocess.call(communication_test_cmd(), stdout=f, stderr=f, shell=True)
-    success = True
-  except getopt.GetoptError as err:
-    f.write(err)
-  except:
-    f.write("Exception: "+traceback.print_exc())
-
-  f.flush()
-  f.close()
-  return success
 
 def main():
   global node_count
@@ -78,12 +49,19 @@ def main():
     if o=="--node-count":
       node_count=int(a)
 
-  if sys.platform.lower().startswith('linux'):
-    res = linux_main()
-  elif sys.platform.lower().startswith('win'):
-    res = windows_main()
+  success = False
+  try:
+    subprocess.call(communication_test_cmd(),
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    shell = sys.platform == "win32")
+    success = True
+  except getopt.GetoptError as err:
+    print(err)
+  except:
+    print("Exception:", traceback.print_exc())
 
-  if res:
+  if success:
     return 0
   else:
     return 1
