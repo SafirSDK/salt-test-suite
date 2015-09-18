@@ -42,16 +42,11 @@ def communication_test_cmd():
             "--thread-count", "2"]
 
 def linux_main():
+  success = False
   try:
     f=open("/home/safir/result.txt", "w")
-    #set_env("HOME", "/home/safir")
-    #set_env("PATH", "/home/safir/safir/runtime/bin")
-    #set_env("LD_LIBRARY_PATH", "/home/safir/safir/runtime/lib")
-    #set_env("SAFIR_RUNTIME", "/home/safir/safir/runtime")
-
-    #subprocess.call(["dots_configuration_check", "-s"], stdout=f, stderr=f)
-    #subprocess.call(["communication_test", "-h"], stdout=f, stderr=f)
     subprocess.call(communication_test_cmd(), stdout=f, stderr=f)
+    success = True
   except getopt.GetoptError as err:
     f.write(err)
   except:
@@ -59,12 +54,14 @@ def linux_main():
 
   f.flush()
   f.close()
+  return success
 
 def windows_main():
+  success = False
   try:
     f=open("c:\\Users\\safir\\result.txt", "w")
-    set_env("PATH", r"c:\Program Files\Safir SDK Core\bin")
     subprocess.call(communication_test_cmd(), stdout=f, stderr=f, shell=True)
+    success = True
   except getopt.GetoptError as err:
     f.write(err)
   except:
@@ -72,6 +69,7 @@ def windows_main():
 
   f.flush()
   f.close()
+  return success
 
 def main():
   global node_count
@@ -81,13 +79,17 @@ def main():
       node_count=int(a)
 
   if sys.platform.lower().startswith('linux'):
-    linux_main()
+    res = linux_main()
   elif sys.platform.lower().startswith('win'):
-    windows_main()
+    res = windows_main()
+
+  if res:
+    return 0
+  else:
+    return 1
 
 #------------------------------------------------
 # If this is the main module, start the program
 #------------------------------------------------
 if __name__ == "__main__":
-  main()
-  sys.exit(0)
+  sys.exit(main())
