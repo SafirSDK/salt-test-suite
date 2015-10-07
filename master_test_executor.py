@@ -281,11 +281,12 @@ for x in range(0, 120):
                     timeout=900, #15 min
                     expr_form="grain")
 
-    self.client.cmd('os:Windows', 'cmd.run',
-                    ['c:\\Users\\safir\\'+safir_win+' /S /TESTSUITE'], #Add /NODEVELOPMENT before testsuite to skip dev
-                    timeout=900, #15 min
-                    expr_form="grain")
+    result = self.client.cmd('os:Windows', 'cmd.run',
+                             ['c:\\Users\\safir\\'+safir_win+' /S /TESTSUITE'], #Add /NODEVELOPMENT before testsuite to skip dev
+                             timeout=900, #15 min
+                             expr_form="grain")
 
+    log (result)
     win_end_time=time.time()
     log("  ...finished after " + str(win_end_time - win_start_time) + " seconds")
 
