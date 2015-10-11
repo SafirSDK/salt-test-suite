@@ -27,7 +27,7 @@ from __future__ import print_function
 import os, subprocess, sys, getopt, time, traceback, re, socket, time
 
 NODES_PER_COMPUTER = 1
-LINUX_ONLY = False
+LINUX_ONLY = True
 WINDOWS_ONLY = False
 COMPUTERS = 10 + (0 if LINUX_ONLY or WINDOWS_ONLY else 10)
 
