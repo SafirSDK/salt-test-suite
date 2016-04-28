@@ -276,16 +276,18 @@ for x in range(0, 120):
 
         self.windows_uninstall()
 
+        log("     Copying installer")
         self.client.cmd("os:Windows",
                         "cp.get_file",
                         ["salt://"+safir_win, "c:/Users/safir/"+safir_win, "makedirs=True"],
-                        timeout=900, #15 min
+                        timeout=1800, #30 min
                         expr_form="grain")
 
+        log("     Running installer")
         result = self.client.cmd('os:Windows',
                                  'cmd.run',
                                  ['c:\\Users\\safir\\'+safir_win+' /S /TESTSUITE'], #Add /NODEVELOPMENT before testsuite to skip dev
-                                 timeout=900, #15 min
+                                 timeout=1800, #30 min
                                  expr_form="grain")
 
         log (result)
