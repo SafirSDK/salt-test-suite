@@ -25,14 +25,26 @@
 ###############################################################################
 import subprocess,sys,json,re
 
-output = subprocess.check_output(("salt-run","-t","20","manage.down")).decode("utf-8")
+def run_command(cmd):
+    _proc = subprocess.Popen(cmd,
+                            stdout = subprocess.PIPE,
+                            stderr = subprocess.STDOUT)
+
+    _output = _proc.communicate()[0].decode("utf-8")
+    if _proc.returncode != 0:
+        print ("Failed to run command, got returncode", _proc.returncode, "and output:", _output)
+        sys.exit(1)
+    return _output
+
+
+output = run_command(("salt-run","-t","20","manage.down"))
 
 print(output)
 if output.find("minion") != -1:
     print ("At least one node is down!")
     sys.exit(1)
 
-output = subprocess.check_output(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision")).decode("utf-8")
+output = run_command(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision"))
 
 #due to bugs in salt I had to remove --static above, and fake all the output into a
 #single json object like this. If --static starts working again it should just be a
