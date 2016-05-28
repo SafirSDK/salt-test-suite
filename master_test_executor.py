@@ -270,8 +270,13 @@ class Executor:
 
         self.client.cmd('os:Windows', 'cmd.run', ['"'+uninstaller+'" /S'], timeout=900, expr_form="grain")
 
-        res=self.client.cmd("os:Windows", "file.directory_exists", [installpath], timeout=900, expr_form="grain")
-        log(res)
+        while True:
+            res=self.client.cmd("os:Windows", "file.directory_exists", [installpath], timeout=900, expr_form="grain")
+            if True not in res.values():
+                log("  - Safir SDK Core appears to be uninstalled")
+                break
+            log("     - Safir SDK Core appears to still be installed")
+            time.sleep(1)
         log("     uninstall completed")
 
     def update_windows(self):
