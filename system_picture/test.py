@@ -24,9 +24,9 @@
 #
 ###############################################################################
 from __future__ import print_function
-import subprocess, sys, time, re, socket, time
+import subprocess, sys, re, socket
 
-NODES_PER_COMPUTER = 1
+NODES_PER_COMPUTER = 5
 LINUX_ONLY = True
 WINDOWS_ONLY = False
 COMPUTERS = 10 + (0 if LINUX_ONLY or WINDOWS_ONLY else 10)
@@ -71,7 +71,7 @@ def run_test():
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--seed-ip", seedip(),
-            "--revolutions", str(1))
+            "--revolutions", str(2))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
         ret = subprocess.call(("circular_restart.py",) + args, shell = True)
@@ -83,10 +83,6 @@ def run_test():
         raise TestFailure("circular_restart.py failed")
 
 def main():
-    startdelay = max(0,mynum()-(10 if WINDOWS_ONLY else 0)) * 10
-
-    log("Sleeping", startdelay, "seconds before starting test apps")
-    time.sleep(startdelay)
     success = False
     try:
         run_test()
