@@ -24,7 +24,7 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, subprocess, sys, getopt, time, traceback, re, socket, time
+import subprocess, sys, time, re, socket, time
 
 NODES_PER_COMPUTER = 1
 LINUX_ONLY = True
@@ -45,7 +45,7 @@ def mynum():
     return int(num)
 
 def gethostname():
-    hostname = socket.gethostname()
+    #hostname = socket.gethostname()
     #return hostname + "-test"
     return "192.168.66.1{0:02d}".format(mynum())
 
@@ -71,7 +71,7 @@ def run_test():
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--seed-ip", seedip(),
-            "--revolutions", str(3))
+            "--revolutions", str(1))
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
         ret = subprocess.call(("circular_restart.py",) + args, shell = True)
@@ -89,19 +89,19 @@ def main():
     time.sleep(startdelay)
     success = False
     try:
-      run_test()
-      success = True
+        run_test()
+        success = True
     except TestFailure as e:
-      log ("Error: " + str(e))
+        log ("Error: " + str(e))
     except Exception as e:
-      log ("Caught exception: " + str(e))
+        log ("Caught exception: " + str(e))
 
     if success:
-      log("Test was successful")
-      return 0
+        log("Test was successful")
+        return 0
     else:
-      log("Test failed")
-      return 1
+        log("Test failed")
+        return 1
 
 #------------------------------------------------
 # If this is the main module, start the program
