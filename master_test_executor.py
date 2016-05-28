@@ -189,6 +189,8 @@ class Executor:
                     dst_file="/home/safir/safir-sdk-core-dbg.deb"
                 elif f.startswith("safir-sdk-core-dev"):
                     dst_file="/home/safir/safir-sdk-core-dev.deb"
+                elif f.startswith("safir-sdk-core-tools"):
+                    dst_file="/home/safir/safir-sdk-core-tools.deb"
                 elif f.startswith("safir-sdk-core"):
                     dst_file="/home/safir/safir-sdk-core.deb"
                 elif f.startswith("SafirSDKCore"):
@@ -205,12 +207,13 @@ class Executor:
 
         safir_core="safir-sdk-core.deb"
         safir_dbg="safir-sdk-core-dbg.deb"
+        safir_tools="safir-sdk-core-tools.deb"
         safir_test="safir-sdk-core-testsuite.deb"
         safir_dev="safir-sdk-core-dev.deb"
 
         log("        copying packages")
         self.client.cmd('os:Ubuntu', 'cmd.run',
-                                        ['rm -f safir-sdk-core.deb safir-sdk-core-dbg.deb safir-sdk-core-dev.deb safir-sdk-core-testsuite.deb'],
+                                        ['rm -f safir-sdk-core.deb safir-sdk-core-dbg.deb safir-sdk-core-tools.deb safir-sdk-core-dev.deb safir-sdk-core-testsuite.deb'],
                                         expr_form="grain")
         self.client.cmd("os:Ubuntu", "cp.get_file",
                                         ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
@@ -220,6 +223,10 @@ class Executor:
         #                                ["salt://"+safir_dbg, "/home/safir/"+safir_dbg, "makedirs=True"],
         #                                timeout=900, #15 min
         #                                expr_form="grain")
+        self.client.cmd("os:Ubuntu", "cp.get_file",
+                                        ["salt://"+safir_test, "/home/safir/"+safir_tools, "makedirs=True"],
+                                        timeout=900, #15 min
+                                        expr_form="grain")
         self.client.cmd("os:Ubuntu", "cp.get_file",
                                         ["salt://"+safir_test, "/home/safir/"+safir_test, "makedirs=True"],
                                         timeout=900, #15 min
@@ -234,6 +241,9 @@ class Executor:
                                         ['sudo apt-get -y purge safir-sdk-core'],
                                         expr_form="grain")
         self.client.cmd('os:Ubuntu', 'cmd.run',
+                                        ['sudo apt-get -y purge safir-sdk-core-tools'],
+                                        expr_form="grain")
+        self.client.cmd('os:Ubuntu', 'cmd.run',
                                         ['sudo apt-get -y purge safir-sdk-core-dbg'],
                                         expr_form="grain")
         self.client.cmd('os:Ubuntu', 'cmd.run',
@@ -246,6 +256,7 @@ class Executor:
         log("     installing packages")
         self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
         #self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dbg], expr_form="grain")
+        self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_tools], expr_form="grain")
         self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
         self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
 
