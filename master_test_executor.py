@@ -270,16 +270,7 @@ class Executor:
 
         self.client.cmd('os:Windows', 'cmd.run', ['"'+uninstaller+'" /S'], timeout=900, expr_form="grain")
 
-        snippet=r"""
-import os, time
-for x in range(0, 120):
-    if not os.path.exists(r'c:\Program Files\Safir SDK Core'):
-        print "Safir is not installed"
-        break
-    print "Safir is still installed, waiting"
-    time.sleep(5.0)
-        """
-        res=self.client.cmd("os:Windows", "cmd.exec_code", ["python", snippet], timeout=900, expr_form="grain")
+        res=self.client.cmd("os:Windows", "file.directory_exists", [installpath], timeout=900, expr_form="grain")
         log(res)
         log("     uninstall completed")
 
