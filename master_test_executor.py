@@ -270,14 +270,17 @@ class Executor:
 
         self.client.cmd('os:Windows', 'cmd.run', ['"'+uninstaller+'" /S'], timeout=900, expr_form="grain")
 
-        snippet="""
+        snippet=r"""
 import os, time
 for x in range(0, 120):
     if not os.path.exists(r'c:\Program Files\Safir SDK Core'):
-            break
+        print "Safir is not installed"
+        break
+    print "Safir is still installed, waiting"
     time.sleep(5.0)
         """
         res=self.client.cmd("os:Windows", "cmd.exec_code", ["python", snippet], timeout=900, expr_form="grain")
+        log(res)
         log("     uninstall completed")
 
     def update_windows(self):
@@ -287,12 +290,15 @@ for x in range(0, 120):
 
         self.windows_uninstall()
 
+        win_end_time=time.time()
+        log("    ...uninstall complete after " + str(time.time() - win_start_time) + " seconds")
         log("     Copying installer")
         self.client.cmd("os:Windows",
                         "cp.get_file",
                         ["salt://"+safir_win, "c:/Users/safir/"+safir_win, "makedirs=True"],
                         timeout=1800, #30 min
                         expr_form="grain")
+        log("    ...copy complete after " + str(time.time() - win_start_time) + " seconds")
 
         log("     Running installer")
         result = self.client.cmd('os:Windows',
