@@ -26,8 +26,8 @@
 from __future__ import print_function
 import subprocess, sys, re, socket
 
-NODES_PER_COMPUTER = 5
-LINUX_ONLY = True
+NODES_PER_COMPUTER = 2
+LINUX_ONLY = False
 WINDOWS_ONLY = False
 COMPUTERS = 10 + (0 if LINUX_ONLY or WINDOWS_ONLY else 10)
 
