@@ -71,7 +71,8 @@ def run_test():
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--seed-ip", seedip(),
-            "--revolutions", str(2))
+            "--revolutions", str(2),
+            "--only-control")
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
         ret = subprocess.call(("circular_restart.py",) + args, shell = True)
