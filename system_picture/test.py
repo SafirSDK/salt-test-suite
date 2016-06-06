@@ -27,9 +27,8 @@ from __future__ import print_function
 import subprocess, sys, re, socket
 
 NODES_PER_COMPUTER = 1
-LINUX_ONLY = False
-WINDOWS_ONLY = False
-COMPUTERS = 10 + (0 if LINUX_ONLY or WINDOWS_ONLY else 10)
+COMPUTERS=range(5)
+REVOLUTIONS = 10
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
@@ -50,28 +49,20 @@ def gethostname():
     return "192.168.66.1{0:02d}".format(mynum())
 
 def seedip():
-    if WINDOWS_ONLY:
-        return "192.168.66.110"
-    else:
-        return "192.168.66.100"
+    return "192.168.66.1{0:02d}".format(COMPUTERS[0])
 
 def run_test():
-    if sys.platform == "win32":
-        if LINUX_ONLY:
-            log("not running on windows")
-            return
-    else:
-        if WINDOWS_ONLY:
-            log("not running on linux")
-            return
+    if mynum() not in COMPUTERS:
+        log("not running on this node")
+        return
 
-    num = mynum() - (10 if WINDOWS_ONLY else 0)
+    num = COMPUTERS.index(mynum())
     args = ("--start", str(num * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
             "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--seed-ip", seedip(),
-            "--revolutions", str(2),
+            "--revolutions", str(REVOLUTIONS),
             "--only-control")
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
