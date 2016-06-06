@@ -27,7 +27,7 @@ from __future__ import print_function
 import subprocess, sys, re, socket
 
 NODES_PER_COMPUTER = 1
-COMPUTERS=range(5)
+COMPUTERS=[0,1,2,10,11,12]
 REVOLUTIONS = 10
 
 def log(*args, **kwargs):
