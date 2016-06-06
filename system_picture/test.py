@@ -59,7 +59,7 @@ def run_test():
     num = COMPUTERS.index(mynum())
     args = ("--start", str(num * NODES_PER_COMPUTER),
             "--nodes", str(NODES_PER_COMPUTER),
-            "--total-nodes", str(COMPUTERS * NODES_PER_COMPUTER),
+            "--total-nodes", str(len(COMPUTERS) * NODES_PER_COMPUTER),
             "--own-ip", gethostname(),
             "--seed-ip", seedip(),
             "--revolutions", str(REVOLUTIONS),
