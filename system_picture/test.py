@@ -90,7 +90,6 @@ def main():
         return 0
     else:
         log("Test failed")
-        time.sleep(1000000)
         return 1
 
 #------------------------------------------------
