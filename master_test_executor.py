@@ -367,6 +367,16 @@ class Executor:
                                         ["c:/Users/safir/result.txt"],
                                         expr_form="compound")
 
+        self.client.cmd("G@os:Ubuntu and "+self.cmd.minion_command,
+                                        "cp.push",
+                                        ["/home/safir/result.zip"],
+                                        expr_form="compound")
+
+        self.client.cmd("G@os:Windows and "+self.cmd.minion_command,
+                                        "cp.push",
+                                        ["c:/Users/safir/result.zip"],
+                                        expr_form="compound")
+
         result_dir="test_result"
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir, ignore_errors=True)
@@ -380,6 +390,12 @@ class Executor:
                     if f.endswith("result.txt"):
                         src_file=os.path.join(root, f)
                         dst_file=os.path.join(result_dir, m+"_result.txt")
+                        shutil.copyfile(src_file, dst_file)
+                        os.remove(src_file)
+                        file_found=True
+                    if f.endswith("result.zip"):
+                        src_file=os.path.join(root, f)
+                        dst_file=os.path.join(result_dir, m+"_result.zip")
                         shutil.copyfile(src_file, dst_file)
                         os.remove(src_file)
                         file_found=True
