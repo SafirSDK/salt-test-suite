@@ -395,7 +395,7 @@ class Executor:
                         file_found=True
                     if f.endswith("result.zip"):
                         src_file=os.path.join(root, f)
-                        dst_file=os.path.join(result_dir, m+"_result.zip")
+                        dst_file=os.path.join(result_dir, m+"_results.zip")
                         shutil.copyfile(src_file, dst_file)
                         os.remove(src_file)
                         file_found=True
