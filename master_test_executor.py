@@ -224,7 +224,7 @@ class Executor:
         #                                timeout=900, #15 min
         #                                expr_form="grain")
         self.client.cmd("os:Ubuntu", "cp.get_file",
-                                        ["salt://"+safir_test, "/home/safir/"+safir_tools, "makedirs=True"],
+                                        ["salt://"+safir_tools, "/home/safir/"+safir_tools, "makedirs=True"],
                                         timeout=900, #15 min
                                         expr_form="grain")
         self.client.cmd("os:Ubuntu", "cp.get_file",
