@@ -254,11 +254,11 @@ class Executor:
                                         expr_form="grain")
 
         log("     installing packages")
-        self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_core], expr_form="grain")
-        #self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dbg], expr_form="grain")
-        self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_tools], expr_form="grain")
-        self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_test], expr_form="grain")
-        self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i '+safir_dev], expr_form="grain")
+        self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i ' +
+                                                 safir_core + " " +
+                                                 safir_tools + " " +
+                                                 safir_test + " " +
+                                                 safir_dev], expr_form="grain")
 
         linux_end_time=time.time()
         log("    ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
