@@ -28,7 +28,7 @@ import subprocess, sys, re, socket
 
 NODES_PER_COMPUTER = 1
 COMPUTERS=[0,1,2,3,4,10,11,12,13,14]
-REVOLUTIONS = 10
+REVOLUTIONS = 3
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
