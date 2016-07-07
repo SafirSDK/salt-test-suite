@@ -68,4 +68,15 @@ for minion,s in json.loads(output).items():
 if len(revisions) != 1:
     print("revisions differ between minions")
     sys.exit(1)
+
+print("Killing test exes on minions")
+run_command(("salt", "-N", "linux", "cmd.run",
+             '"killall -9 system_picture_component_test_node communication_test system_picture_listener"'))
+run_command(("salt", "-N" ,"win", "cmd.run",
+             '"taskkill /f /im communication_test.exe"'))
+run_command(("salt", "-N" ,"win", "cmd.run",
+             '"taskkill /f /im system_picture_component_test_node.exe"'))
+run_command(("salt", "-N" ,"win", "cmd.run",
+             '"taskkill /f /im system_picture_listener.exe"'))
+
 sys.exit(0)
