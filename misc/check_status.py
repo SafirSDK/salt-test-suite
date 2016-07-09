@@ -70,13 +70,13 @@ if len(revisions) != 1:
     sys.exit(1)
 
 print("Killing test exes on minions")
-run_command(("salt", "-N", "linux", "cmd.run",
-             '"killall -9 system_picture_component_test_node communication_test system_picture_listener"'))
-run_command(("salt", "-N" ,"win", "cmd.run",
-             '"taskkill /f /im communication_test.exe"'))
-run_command(("salt", "-N" ,"win", "cmd.run",
-             '"taskkill /f /im system_picture_component_test_node.exe"'))
-run_command(("salt", "-N" ,"win", "cmd.run",
-             '"taskkill /f /im system_picture_listener.exe"'))
+subprocess.call(("salt", "-N", "linux", "cmd.run",
+                '"killall -9 system_picture_component_test_node communication_test system_picture_listener"'))
+subprocess.call(("salt", "-N" ,"win", "cmd.run",
+                '"taskkill /f /im communication_test.exe"'))
+subprocess.call(("salt", "-N" ,"win", "cmd.run",
+                '"taskkill /f /im system_picture_component_test_node.exe"'))
+subprocess.call(("salt", "-N" ,"win", "cmd.run",
+                '"taskkill /f /im system_picture_listener.exe"'))
 
 sys.exit(0)
