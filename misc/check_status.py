@@ -25,6 +25,11 @@
 ###############################################################################
 import subprocess,sys,json,re
 
+def log(*args, **kwargs):
+    print(*args, **kwargs)
+    sys.stdout.flush()
+
+
 def run_command(cmd):
     _proc = subprocess.Popen(cmd,
                             stdout = subprocess.PIPE,
@@ -32,16 +37,16 @@ def run_command(cmd):
 
     _output = _proc.communicate()[0].decode("utf-8")
     if _proc.returncode != 0:
-        print ("Failed to run command, got returncode", _proc.returncode, "and output:", _output)
+        log ("Failed to run command, got returncode", _proc.returncode, "and output:", _output)
         sys.exit(1)
     return _output
 
 
 output = run_command(("salt-run","-t","20","manage.down"))
 
-print(output)
+log(output)
 if output.find("minion") != -1:
-    print ("At least one node is down!")
+    log ("At least one node is down!")
     sys.exit(1)
 
 output = run_command(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision"))
@@ -59,17 +64,17 @@ revisions = set()
 for minion,s in json.loads(output).items():
     match = pattern.match(s)
     if match is None:
-        print("No revision found for",minion)
+        log("No revision found for",minion)
         sys.exit(1)
     else:
-        print (minion, "has revision", match.group(1))
+        log (minion, "has revision", match.group(1))
         revisions.add(match.group(1))
 
 if len(revisions) != 1:
-    print("revisions differ between minions")
+    log("revisions differ between minions")
     sys.exit(1)
 
-print("Killing test exes on minions")
+log("Killing test exes on minions")
 subprocess.call(("salt", "-N", "linux", "cmd.run",
                 '"killall -9 system_picture_component_test_node communication_test system_picture_listener"'))
 subprocess.call(("salt", "-N" ,"win", "cmd.run",
