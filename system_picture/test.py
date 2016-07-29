@@ -27,7 +27,7 @@ from __future__ import print_function
 import subprocess, sys, re, socket
 
 NODES_PER_COMPUTER = 1
-COMPUTERS=[10,11,12,13,14]
+COMPUTERS=[10,11]
 #COMPUTERS=list(range(10))
 REVOLUTIONS = 3
 
