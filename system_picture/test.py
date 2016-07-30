@@ -24,7 +24,7 @@
 #
 ###############################################################################
 from __future__ import print_function
-import subprocess, sys, re, socket
+import subprocess, sys, re, socket, os, shutil, time
 
 NODES_PER_COMPUTER = 1
 COMPUTERS=[10,11]
@@ -35,6 +35,14 @@ def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
 
+def rmdir(directory):
+    if os.path.exists(directory):
+        try:
+            shutil.rmtree(directory)
+        except OSError:
+            log ("Failed to remove directory, will retry")
+            time.sleep(0.2)
+            shutil.rmtree(directory)
 
 class TestFailure(Exception):
     pass
@@ -53,6 +61,13 @@ def seedip():
     return "192.168.66.1{0:02d}".format(COMPUTERS[0])
 
 def run_test():
+    try:
+        log("Removing old test results")
+        rmdir("circular_restart_output")
+        os.remove("result.zip")
+    except OSError:
+        log("Failed to remove something")
+
     if mynum() not in COMPUTERS:
         log("not running on this node")
         return
