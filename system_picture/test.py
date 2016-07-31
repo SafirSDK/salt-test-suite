@@ -79,7 +79,7 @@ def run_test():
             "--own-ip", gethostname(),
             "--seed-ip", seedip(),
             "--revolutions", str(REVOLUTIONS),
-            "--only-control",
+            #"--only-control",
             "--zip-results")
     log("Starting circular_restart.py with arguments",args)
     if sys.platform == "win32":
