@@ -38,7 +38,7 @@ def log(*args, **kwargs):
 def remove(item, retry = True):
     try:
         if not os.path.exists(item):
-            log ("Cannot remove non-existent object '" + item + "'")
+            pass
         elif os.path.isdir(item):
             shutil.rmtree(item)
         elif os.path.isfile(item):
