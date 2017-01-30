@@ -61,12 +61,16 @@ def seedip():
     return "192.168.66.1{0:02d}".format(COMPUTERS[0])
 
 def run_test():
+    log("Removing old test results")
     try:
-        log("Removing old test results")
         rmdir("circular_restart_output")
+    except OSError as e:
+        log("Failed to remove circular_restart_output:", e)
+
+    try:
         os.remove("result.zip")
-    except OSError:
-        log("Failed to remove something")
+    except OSError as e:
+        log("Failed to remove result.zip:", e)
 
     if mynum() not in COMPUTERS:
         log("not running on this node")
