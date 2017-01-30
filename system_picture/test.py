@@ -35,18 +35,23 @@ def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
 
-def rmdir(directory):
-    if os.path.exists(directory):
-        try:
-            shutil.rmtree(directory)
-        except OSError:
-            log ("Failed to remove directory, will retry")
-            time.sleep(0.2)
-            shutil.rmtree(directory)
+def remove(item, retry = True):
+    try:
+        if not os.path.exists(item):
+            log ("Cannot remove non-existent object '" + item + "'")
+        elif os.path.isdir(item):
+            shutil.rmtree(item)
+        elif os.path.isfile(item):
+            os.remove(item)
+        else:
+            log ("Cannot remove strange object '" + item + "'")
+    except OSError:
+        log ("Failed to remove", item, " , will retry")
+        time.sleep(0.2)
+        remove(item, False)
 
 class TestFailure(Exception):
     pass
-
 
 def mynum():
     num = re.match(r"minion([0-9][0-9])",socket.gethostname()).group(1)
@@ -62,15 +67,8 @@ def seedip():
 
 def run_test():
     log("Removing old test results")
-    try:
-        rmdir("circular_restart_output")
-    except OSError as e:
-        log("Failed to remove circular_restart_output:", e)
-
-    try:
-        os.remove("result.zip")
-    except OSError as e:
-        log("Failed to remove result.zip:", e)
+    remove("circular_restart_output")
+    remove("result.zip")
 
     if mynum() not in COMPUTERS:
         log("not running on this node")
