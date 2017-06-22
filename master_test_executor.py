@@ -173,14 +173,21 @@ class Executor:
         log("    -update Linux minions")
         linux_start_time=time.time()
 
+        #delete old stuff
+        self.client.cmd('os:Ubuntu', 'cmd.run',['rm -f *.deb'],expr_form="grain")
+
         for pat in ("", "-tools", "-testsuite", "-dev"):
             fullpat = "safir-sdk-core" + pat + "_*_amd64.deb"
             matches = glob.glob(fullpat)
             log(matches)
             if len(matches) != 1:
                 raise InternalError("Unexpected number of debs!")
+            self.client.cmd("os:Ubuntu",
+                            "cp.get_file",
+                            ["salt://"+safir_core, os.path.join(os.getcwd(),matches[0]), "makedirs=True"],
+                            timeout=900, #15 min
 
-            raise InternalError("exiting")
+        raise InternalError("exiting")
         """
         safir_dbg="safir-sdk-core-dbg.deb"
         safir_tools="safir-sdk-core-tools.deb"
