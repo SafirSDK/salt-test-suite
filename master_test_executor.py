@@ -286,7 +286,6 @@ class Executor:
     def sync_safir(self):
         log("Install latest Safir SDK Core")
 
-        self.download_from_jenkins()
         self.update_linux()
         self.update_windows()
         log(" -update Safir finished")
