@@ -186,6 +186,7 @@ class Executor:
                             "cp.get_file",
                             ["salt://"+safir_core, os.path.join(os.getcwd(),matches[0]), "makedirs=True"],
                             timeout=900, #15 min
+                            expr_form="grain")
 
         raise InternalError("exiting")
         """
