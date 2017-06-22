@@ -184,7 +184,9 @@ class Executor:
                 raise InternalError("Unexpected number of debs!")
             self.client.cmd("os:Ubuntu",
                             "cp.get_file",
-                            ["salt://"+matches[0], os.path.join(os.getcwd(),matches[0]), "makedirs=True"],
+                            ["salt:/"+ os.path.join(os.getcwd(),matches[0]),
+                             os.path.join("/home/safir", matches[0]),
+                             "makedirs=True"],
                             timeout=900, #15 min
                             expr_form="grain")
 
