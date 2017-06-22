@@ -169,43 +169,19 @@ class Executor:
 
         log(" -get logs finished")
 
-    def download_from_jenkins(self):
-        subprocess.call(["wget", "-nv", "-O", "/home/safir/deb.zip",
-        "http://safir-jenkins-master:8080/safir/job/Build%20salt%20branch/Config=Release,label=ubuntu-trusty-lts-64-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
-        subprocess.call(["wget", "-nv", "-O",
-        "/home/safir/win.zip", "http://safir-jenkins-master:8080/safir/job/Build%20salt%20branch/Config=Release,label=win7-64-vs2013-build/lastSuccessfulBuild/artifact/*zip*/archive.zip", "--no-check-certificate"])
-
-        subprocess.call(["unzip", "-o", "/home/safir/deb.zip", "-d", "/home/safir"])
-        subprocess.call(["unzip", "-o", "/home/safir/win.zip", "-d", "/home/safir"])
-        os.remove("/home/safir/deb.zip")
-        os.remove("/home/safir/win.zip")
-
-        for root, folders, files in os.walk("/home/safir/archive"):
-            for f in files:
-                dst_file=None
-                if f.startswith("safir-sdk-core-testsuite"):
-                    dst_file="/home/safir/safir-sdk-core-testsuite.deb"
-                elif f.startswith("safir-sdk-core-dbg"):
-                    dst_file="/home/safir/safir-sdk-core-dbg.deb"
-                elif f.startswith("safir-sdk-core-dev"):
-                    dst_file="/home/safir/safir-sdk-core-dev.deb"
-                elif f.startswith("safir-sdk-core-tools"):
-                    dst_file="/home/safir/safir-sdk-core-tools.deb"
-                elif f.startswith("safir-sdk-core"):
-                    dst_file="/home/safir/safir-sdk-core.deb"
-                elif f.startswith("SafirSDKCore"):
-                    dst_file="/home/safir/SafirSDKCore.exe"
-
-                src_file=os.path.join(root, f)
-                shutil.copyfile(src_file, dst_file)
-
-        shutil.rmtree("/home/safir/archive", ignore_errors=True)
-
     def update_linux(self):
         log("    -update Linux minions")
         linux_start_time=time.time()
 
-        safir_core="safir-sdk-core.deb"
+        for pat in ("", "-tools", "-testsuite", "-dev"):
+            fullpat = "safir-sdk-core" + pat + "_*_amd64.deb"
+            matches = glob.glob(fullpat)
+            log(matches)
+            if len(matches) != 1:
+                raise InternalError("Unexpected number of debs!")
+
+            raise InternalError("exiting")
+        """
         safir_dbg="safir-sdk-core-dbg.deb"
         safir_tools="safir-sdk-core-tools.deb"
         safir_test="safir-sdk-core-testsuite.deb"
@@ -262,7 +238,7 @@ class Executor:
 
         linux_end_time=time.time()
         log("    ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
-
+        """
     def windows_uninstall(self):
         log("     uninstall old Windows installation")
         installpath=r'c:\Program Files\Safir SDK Core'
