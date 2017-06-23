@@ -182,10 +182,11 @@ class Executor:
             log(matches)
             if len(matches) != 1:
                 raise InternalError("Unexpected number of debs!")
+            print(["salt://"+ os.path.relpath(os.path.join(os.getcwd(),matches[0], "/home/safir/"))])
             self.client.cmd("os:Ubuntu",
                             "cp.get_file",
-                            ["salt:/"+ os.path.join(os.getcwd(),matches[0]),
-                             os.path.join("/home/safir", matches[0]),
+                            ["salt://"+ os.path.relpath(os.path.join(os.getcwd(),matches[0], "/home/safir/")),
+                             matches[0],
                              "makedirs=True"],
                             timeout=900, #15 min
                             expr_form="grain")
