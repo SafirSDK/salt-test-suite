@@ -192,7 +192,7 @@ class Executor:
             raise InternalError("salt_get_file failed for", filename)
 
     def salt_run_shell_command(self, tgt, command):
-        result = self.salt_cmd(tgt,"cp.retcode", [command,])
+        result = self.salt_cmd(tgt,"cmd.retcode", [command,])
         log(result)
 
     def update_linux(self):
