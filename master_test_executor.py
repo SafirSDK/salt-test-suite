@@ -196,6 +196,7 @@ class Executor:
 
     def salt_run_shell_command(self, tgt, command):
         results = self.salt_cmd(tgt,"cmd.run_all", [command,])
+        error = False
         for minion,result in results.items():
             if result["retcode"] != 0:
                 log("Command failed for ", minion + ":", result)
