@@ -168,7 +168,7 @@ class Executor:
                 log(m+" - no logs found")
 
     def salt_cmd(self, tgt, cmd, args):
-        log("Running", cmd, args, "on", tgt)
+        #log("Running", cmd, args, "on", tgt)
         result = self.client.cmd(tgt,
                                  cmd,
                                  args,
@@ -177,6 +177,7 @@ class Executor:
         return result
 
     def salt_get_file(self, tgt, filename):
+        log("[Copying", filename, "to", tgt + "]")
         if not os.path.isfile(filename):
             raise InternalError("Cannot find file " + filename + " to copy!")
         tgtname = "/home/safir/" + filename
@@ -195,6 +196,7 @@ class Executor:
             raise InternalError("salt_get_file failed for", filename)
 
     def salt_run_shell_command(self, tgt, command):
+        log("[Running '"+ command + "' on", tgt + "]")
         results = self.salt_cmd(tgt,"cmd.run_all", [command,])
         error = False
         for minion,result in results.items():
@@ -217,11 +219,11 @@ class Executor:
 
         log("     uninstalling old packages")
         self.salt_run_shell_command('os:Ubuntu',
-                       "sudo apt-get -y purge safir-sdk-core "           +
-                                             "safir-sdk-core-tools "     +
-                                             "safir-sdk-core-dbg "       +
-                                             "safir-sdk-core-testsuite " +
-                                             "safir-sdk-core-dev")
+                       "sudo dpkg --purge safir-sdk-core "           +
+                                         "safir-sdk-core-tools "     +
+                                         "safir-sdk-core-dbg "       +
+                                         "safir-sdk-core-testsuite " +
+                                         "safir-sdk-core-dev")
 
         log("        copying packages")
         for pat in ("", "-tools", "-testsuite", "-dev"):
@@ -231,6 +233,12 @@ class Executor:
             if len(matches) != 1:
                 raise InternalError("Unexpected number of debs!")
             self.salt_get_file("os:Ubuntu", matches[0])
+
+        log("     installing packages")
+        self.salt_run_shell_command('os:Ubuntu', 'sudo dpkg -i *.deb')
+
+        linux_end_time=time.time()
+        log("    ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
 
 
         raise InternalError("exiting")
@@ -265,15 +273,6 @@ class Executor:
                                         expr_form="grain")
 
 
-        log("     installing packages")
-        self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i ' +
-                                                 safir_core + " " +
-                                                 safir_tools + " " +
-                                                 safir_test + " " +
-                                                 safir_dev], expr_form="grain")
-
-        linux_end_time=time.time()
-        log("    ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
         """
     def windows_uninstall(self):
         log("     uninstall old Windows installation")
