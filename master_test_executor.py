@@ -180,7 +180,7 @@ class Executor:
         log("[Copying", filename, "to", tgt + "]")
         if not os.path.isfile(filename):
             raise InternalError("Cannot find file " + filename + " to copy!")
-        tgtname = "/home/safir/" + filename
+        tgtname = ("c:/Users/safir/" if tgt == "os:Windows" else "/home/safir/") + filename
         srcname = "salt://" + os.path.relpath(os.path.join(os.getcwd(),filename), "/home/safir/")
         result = self.salt_cmd(tgt,"cp.get_file", [srcname, tgtname])
         error = False
@@ -214,13 +214,13 @@ class Executor:
                 raise InternalError("salt_run_shell_command failed for", command)
 
     def update_linux(self):
-        log("    -update Linux minions")
-        linux_start_time=time.time()
+        log("=== Update Linux minions")
+        start_time=time.time()
 
-        log("        delete old debs")
+        log("Delete old debs")
         self.salt_run_shell_command('os:Ubuntu', 'rm -f *.deb')
 
-        log("     uninstalling old packages")
+        log("Uninstalling old packages")
         #We uninstall all safir packages, regardless of which ones are installed
         self.salt_run_shell_command('os:Ubuntu',
                        "sudo dpkg --purge safir-sdk-core "           +
@@ -229,7 +229,7 @@ class Executor:
                                          "safir-sdk-core-dbg "       +
                                          "safir-sdk-core-testsuite ")
 
-        log("        copying packages")
+        log("Copying packages")
         for pat in ("", "-tools", "-testsuite"):
             fullpat = "safir-sdk-core" + pat + "_*_amd64.deb"
             matches = glob.glob(fullpat)
@@ -237,14 +237,12 @@ class Executor:
                 raise InternalError("Unexpected number of debs!")
             self.salt_get_file("os:Ubuntu", matches[0])
 
-        log("     installing packages")
+        log("Installing packages")
         self.salt_run_shell_command('os:Ubuntu', 'sudo dpkg -i *.deb')
 
-        linux_end_time=time.time()
-        log("    ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
+        log("finished after " + str(time.time() - start_time) + " seconds")
 
     def windows_uninstall(self):
-        log("     uninstall old Windows installation")
         installpath=r'c:\Program Files\Safir SDK Core'
         uninstaller = installpath + r"\Uninstall.exe"
 
@@ -253,39 +251,36 @@ class Executor:
         while True:
             res=self.salt_cmd("os:Windows", "file.directory_exists", [installpath])
             if True not in res.values():
-                log("  - Safir SDK Core appears to be uninstalled")
+                log(" - Safir SDK Core appears to be uninstalled everywhere")
                 break
-            log("     - Safir SDK Core appears to still be installed")
-            time.sleep(1)
-        log("     uninstall completed")
+            log(" - Safir SDK Core appears to still be installed somewhere")
+            time.sleep(5)
 
     def update_windows(self):
-        log("    -update Windows minions")
-        safir_win="SafirSDKCore.exe"
-        win_start_time=time.time()
+        log("=== Update Windows minions")
+        start_time=time.time()
 
+        log("Uninstall old Windows installation")
         self.windows_uninstall()
-        log("    ...uninstall complete after " + str(time.time() - win_start_time) + " seconds")
-        log("     Copying installer")
+
+        log("Copying installer")
         matches = glob.glob("SafirSDKCore-*.exe")
         if len(matches) != 1:
             raise InternalError("Unexpected number of exes!")
-        self.salt_get_file("os:Ubuntu", matches[0])
-        log("    ...copy complete after " + str(time.time() - win_start_time) + " seconds")
+        self.salt_get_file("os:Windows", matches[0])
 
-        log("     Running installer")
+        log("Running installer")
         #Add /NODEVELOPMENT before testsuite to skip dev
         self.salt_run_shell_command('os:Windows',
                                     matches[0]+' /S /TESTSUITE /NODEVELOPMENT')
 
-        log("    ...finished after " + str(time.time() - win_start_time) + " seconds")
+        log("finished after " + str(time.time() - start_time) + " seconds")
 
     def sync_safir(self):
-        log("Install latest Safir SDK Core")
-
+        log("== Install latest Safir SDK Core")
         self.update_linux()
         self.update_windows()
-        log(" -update Safir finished")
+        log("Install latest Safir Core completed")
 
     def upload_test(self):
         abspath = os.path.join(os.getcwd(), self.cmd.test_script_path)
