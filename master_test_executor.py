@@ -182,18 +182,33 @@ class Executor:
         tgtname = "/home/safir/" + filename
         srcname = "salt://" + os.path.relpath(os.path.join(os.getcwd(),filename), "/home/safir/")
         result = self.salt_cmd(tgt,"cp.get_file", [srcname, tgtname])
-        for res in result:
+        error = False
+        for minion,res in result.items():
             if res != tgtname:
-                log("Unexpected result:", res)
+                log("Unexpected result for", minion + ": ", res)
+                error = True
 
+        if error:
+            raise InternalError("salt_get_file failed for", filename)
+
+    def salt_run_shell_command(self, tgt, command):
+        result = self.salt_cmd(tgt,"cp.retcode", [command,])
         log(result)
 
     def update_linux(self):
         log("    -update Linux minions")
         linux_start_time=time.time()
 
-        #delete old stuff
-        self.client.cmd('os:Ubuntu', 'cmd.run',['rm -f *.deb'],expr_form="grain")
+        log("        delete old debs")
+        self.salt_run_shell_command('os:Ubuntu', 'rm -f *.deb')
+
+        log("     uninstalling old packages")
+        self.salt_run_shell_command('os:Ubuntu',
+                       'sudo apt-get -y purge safir-sdk-core "           + \
+                                             "safir-sdk-core-tools "     + \
+                                             "safir-sdk-core-dbg "       + \
+                                             "safir-sdk-core-testsuite " + \
+                                             "safir-sdk-core-dev')
 
         log("        copying packages")
         for pat in ("", "-tools", "-testsuite", "-dev"):
@@ -203,22 +218,7 @@ class Executor:
             if len(matches) != 1:
                 raise InternalError("Unexpected number of debs!")
             self.salt_get_file("os:Ubuntu", matches[0])
-            """
-            self.salt_cmd("os:Ubuntu",
-                          "cp.get_file",
-                          ["salt://"+ os.path.relpath(os.path.join(os.getcwd(),matches[0]), "/home/safir/"),
-                           "/home/safir/" + matches[0],
-                           "makedirs=True"])
-            """
 
-        log("     uninstalling old packages")
-        self.salt_cmd('os:Ubuntu',
-                      'cmd.retcode',
-                      ['sudo apt-get -y purge safir-sdk-core "           + \
-                                             "safir-sdk-core-tools "     + \
-                                             "safir-sdk-core-dbg "       + \
-                                             "safir-sdk-core-testsuite " + \
-                                             "safir-sdk-core-dev'])
 
         raise InternalError("exiting")
         """
