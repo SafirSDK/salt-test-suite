@@ -222,14 +222,12 @@ class Executor:
                        "sudo dpkg --purge safir-sdk-core "           +
                                          "safir-sdk-core-tools "     +
                                          "safir-sdk-core-dbg "       +
-                                         "safir-sdk-core-testsuite " +
-                                         "safir-sdk-core-dev")
+                                         "safir-sdk-core-testsuite ")
 
         log("        copying packages")
         for pat in ("", "-tools", "-testsuite", "-dev"):
             fullpat = "safir-sdk-core" + pat + "_*_amd64.deb"
             matches = glob.glob(fullpat)
-            log(matches)
             if len(matches) != 1:
                 raise InternalError("Unexpected number of debs!")
             self.salt_get_file("os:Ubuntu", matches[0])
