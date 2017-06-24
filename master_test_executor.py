@@ -218,14 +218,16 @@ class Executor:
         self.salt_run_shell_command('os:Ubuntu', 'rm -f *.deb')
 
         log("     uninstalling old packages")
+        #We uninstall all safir packages, regardless of which ones are installed
         self.salt_run_shell_command('os:Ubuntu',
                        "sudo dpkg --purge safir-sdk-core "           +
                                          "safir-sdk-core-tools "     +
+                                         "safir-sdk-core-dev "     +
                                          "safir-sdk-core-dbg "       +
                                          "safir-sdk-core-testsuite ")
 
         log("        copying packages")
-        for pat in ("", "-tools", "-testsuite", "-dev"):
+        for pat in ("", "-tools", "-testsuite"):
             fullpat = "safir-sdk-core" + pat + "_*_amd64.deb"
             matches = glob.glob(fullpat)
             if len(matches) != 1:
