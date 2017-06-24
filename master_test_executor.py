@@ -174,6 +174,18 @@ class Executor:
                                  args,
                                  timeout=900, #15 min
                                  expr_form="grain")
+        return result
+
+    def salt_get_file(self, tgt, filename):
+        if not os.path.isfile(filename):
+            raise InternalError("Cannot find file " + filename + " to copy!")
+        tgtname = "/home/safir/" + filename
+        srcname = "salt://" + os.path.relpath(os.path.join(os.getcwd(),filename), "/home/safir/")
+        result = self.salt_cmd(tgt,"cp.get_file", [srcname, tgtname])
+        for res in result:
+            if res != tgtname:
+                log("Unexpected result:", res)
+
         log(result)
 
     def update_linux(self):
@@ -190,20 +202,23 @@ class Executor:
             log(matches)
             if len(matches) != 1:
                 raise InternalError("Unexpected number of debs!")
+            self.salt_get_file("os:Ubuntu", matches[0])
+            """
             self.salt_cmd("os:Ubuntu",
                           "cp.get_file",
                           ["salt://"+ os.path.relpath(os.path.join(os.getcwd(),matches[0]), "/home/safir/"),
                            "/home/safir/" + matches[0],
                            "makedirs=True"])
+            """
 
         log("     uninstalling old packages")
         self.salt_cmd('os:Ubuntu',
-                      'cmd.run',
-                      ['sudo apt-get -y purge safir-sdk-core     \
-                                              safir-sdk-core-tools     \
-                                              safir-sdk-core-dbg       \
-                                              safir-sdk-core-testsuite \
-                                              safir-sdk-core-dev'])
+                      'cmd.retcode',
+                      ['sudo apt-get -y purge safir-sdk-core "           + \
+                                             "safir-sdk-core-tools "     + \
+                                             "safir-sdk-core-dbg "       + \
+                                             "safir-sdk-core-testsuite " + \
+                                             "safir-sdk-core-dev'])
 
         raise InternalError("exiting")
         """
