@@ -187,13 +187,25 @@ class Executor:
             if res != tgtname:
                 log("Unexpected result for", minion + ": ", res)
                 error = True
+        if (tgt == "os:Ubuntu" or tgt == "os:Windows") and len(result) != 10:
+            log ("Unexpected number of results in", result)
+            raise InternalError("Unexpected number of results: " + str(len(result)))
 
         if error:
             raise InternalError("salt_get_file failed for", filename)
 
     def salt_run_shell_command(self, tgt, command):
-        result = self.salt_cmd(tgt,"cmd.retcode", [command,])
-        log(result)
+        results = self.salt_cmd(tgt,"cmd.run_all", [command,])
+        for minion,result in results.items():
+            if result["retcode"] != 0:
+                log("Command failed for ", minion + ":", result)
+                error = True
+        if (tgt == "os:Ubuntu" or tgt == "os:Windows") and len(results) != 10:
+            log ("Unexpected number of results in", results)
+            raise InternalError("Unexpected number of results: " + str(len(results)))
+
+        if error:
+            raise InternalError("salt_run_shell_command failed for", command)
 
     def update_linux(self):
         log("    -update Linux minions")
