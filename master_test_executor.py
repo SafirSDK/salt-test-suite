@@ -176,6 +176,7 @@ class Executor:
         #delete old stuff
         self.client.cmd('os:Ubuntu', 'cmd.run',['rm -f *.deb'],expr_form="grain")
 
+        log("        copying packages")
         for pat in ("", "-tools", "-testsuite", "-dev"):
             fullpat = "safir-sdk-core" + pat + "_*_amd64.deb"
             matches = glob.glob(fullpat)
@@ -191,6 +192,15 @@ class Executor:
                                     expr_form="grain")
             print ("cp.get_file result:", result)
 
+        log("     uninstalling old packages")
+        result = self.client.cmd('os:Ubuntu', 'cmd.run',
+                                 ['sudo apt-get -y purge safir-sdk-core     \
+                                                   safir-sdk-core-tools     \
+                                                   safir-sdk-core-dbg       \
+                                                   safir-sdk-core-testsuite \
+                                                   safir-sdk-core-dev'],
+                                        expr_form="grain")
+
         raise InternalError("exiting")
         """
         safir_dbg="safir-sdk-core-dbg.deb"
@@ -198,7 +208,6 @@ class Executor:
         safir_test="safir-sdk-core-testsuite.deb"
         safir_dev="safir-sdk-core-dev.deb"
 
-        log("        copying packages")
         self.client.cmd('os:Ubuntu', 'cmd.run',
                                         ['rm -f safir-sdk-core.deb safir-sdk-core-dbg.deb safir-sdk-core-tools.deb safir-sdk-core-dev.deb safir-sdk-core-testsuite.deb'],
                                         expr_form="grain")
@@ -223,22 +232,6 @@ class Executor:
                                         timeout=900, #15 min
                                         expr_form="grain")
 
-        log("     uninstalling old packages")
-        self.client.cmd('os:Ubuntu', 'cmd.run',
-                                        ['sudo apt-get -y purge safir-sdk-core'],
-                                        expr_form="grain")
-        self.client.cmd('os:Ubuntu', 'cmd.run',
-                                        ['sudo apt-get -y purge safir-sdk-core-tools'],
-                                        expr_form="grain")
-        self.client.cmd('os:Ubuntu', 'cmd.run',
-                                        ['sudo apt-get -y purge safir-sdk-core-dbg'],
-                                        expr_form="grain")
-        self.client.cmd('os:Ubuntu', 'cmd.run',
-                                        ['sudo apt-get -y purge safir-sdk-core-testsuite'],
-                                        expr_form="grain")
-        self.client.cmd('os:Ubuntu', 'cmd.run',
-                                        ['sudo apt-get -y purge safir-sdk-core-dev'],
-                                        expr_form="grain")
 
         log("     installing packages")
         self.client.cmd('os:Ubuntu', 'cmd.run', ['sudo dpkg -i ' +
