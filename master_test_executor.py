@@ -217,11 +217,11 @@ class Executor:
 
         log("     uninstalling old packages")
         self.salt_run_shell_command('os:Ubuntu',
-                       'sudo apt-get -y purge safir-sdk-core "           + \
-                                             "safir-sdk-core-tools "     + \
-                                             "safir-sdk-core-dbg "       + \
-                                             "safir-sdk-core-testsuite " + \
-                                             "safir-sdk-core-dev')
+                       "sudo apt-get -y purge safir-sdk-core "           +
+                                             "safir-sdk-core-tools "     +
+                                             "safir-sdk-core-dbg "       +
+                                             "safir-sdk-core-testsuite " +
+                                             "safir-sdk-core-dev")
 
         log("        copying packages")
         for pat in ("", "-tools", "-testsuite", "-dev"):
