@@ -167,7 +167,14 @@ class Executor:
             else:
                 log(m+" - no logs found")
 
-        log(" -get logs finished")
+    def salt_cmd(self, tgt, cmd, args):
+        log("Running", cmd, args, "on", tgt)
+        result = self.client.cmd(tgt,
+                                 cmd,
+                                 args,
+                                 timeout=900, #15 min
+                                 expr_form="grain")
+        log(result)
 
     def update_linux(self):
         log("    -update Linux minions")
@@ -183,23 +190,20 @@ class Executor:
             log(matches)
             if len(matches) != 1:
                 raise InternalError("Unexpected number of debs!")
-            result = self.client.cmd("os:Ubuntu",
-                                    "cp.get_file",
-                                    ["salt://"+ os.path.relpath(os.path.join(os.getcwd(),matches[0]), "/home/safir/"),
-                                     "/home/safir/" + matches[0],
-                                     "makedirs=True"],
-                                    timeout=900, #15 min
-                                    expr_form="grain")
-            print ("cp.get_file result:", result)
+            self.salt_cmd("os:Ubuntu",
+                          "cp.get_file",
+                          ["salt://"+ os.path.relpath(os.path.join(os.getcwd(),matches[0]), "/home/safir/"),
+                           "/home/safir/" + matches[0],
+                           "makedirs=True"])
 
         log("     uninstalling old packages")
-        result = self.client.cmd('os:Ubuntu', 'cmd.run',
-                                 ['sudo apt-get -y purge safir-sdk-core     \
-                                                   safir-sdk-core-tools     \
-                                                   safir-sdk-core-dbg       \
-                                                   safir-sdk-core-testsuite \
-                                                   safir-sdk-core-dev'],
-                                        expr_form="grain")
+        self.salt_cmd('os:Ubuntu',
+                      'cmd.run',
+                      ['sudo apt-get -y purge safir-sdk-core     \
+                                              safir-sdk-core-tools     \
+                                              safir-sdk-core-dbg       \
+                                              safir-sdk-core-testsuite \
+                                              safir-sdk-core-dev'])
 
         raise InternalError("exiting")
         """
