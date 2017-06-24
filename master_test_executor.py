@@ -264,21 +264,17 @@ class Executor:
         self.windows_uninstall()
         log("    ...uninstall complete after " + str(time.time() - win_start_time) + " seconds")
         log("     Copying installer")
-        matches = glob.glob("SafirSDKCore-*.exeb")
+        matches = glob.glob("SafirSDKCore-*.exe")
         if len(matches) != 1:
             raise InternalError("Unexpected number of exes!")
         self.salt_get_file("os:Ubuntu", matches[0])
         log("    ...copy complete after " + str(time.time() - win_start_time) + " seconds")
 
-        raise InternalError("exiting")
         log("     Running installer")
-        result = self.client.cmd('os:Windows',
-                                 'cmd.run',
-                                 ['c:\\Users\\safir\\'+safir_win+' /S /TESTSUITE'], #Add /NODEVELOPMENT before testsuite to skip dev
-                                 timeout=1800, #30 min
-                                 expr_form="grain")
+        #Add /NODEVELOPMENT before testsuite to skip dev
+        self.salt_run_shell_command('os:Windows',
+                                    matches[0]+' /S /TESTSUITE /NODEVELOPMENT')
 
-        log (result)
         log("    ...finished after " + str(time.time() - win_start_time) + " seconds")
 
     def sync_safir(self):
