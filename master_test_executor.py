@@ -195,7 +195,7 @@ class Executor:
         if error:
             raise InternalError("salt_get_file failed for", filename)
 
-    def salt_run_shell_command(self, tgt, command):
+    def salt_run_shell_command(self, tgt, command, ignore_errors = False):
         log("[Running '"+ command + "' on", tgt + "]")
         results = self.salt_cmd(tgt,"cmd.run_all", [command,])
         error = False
@@ -208,7 +208,10 @@ class Executor:
             raise InternalError("Unexpected number of results: " + str(len(results)))
 
         if error:
-            raise InternalError("salt_run_shell_command failed for", command)
+            if ignore_errors:
+                log("Ignoring errors")
+            else:
+                raise InternalError("salt_run_shell_command failed for", command)
 
     def update_linux(self):
         log("    -update Linux minions")
@@ -245,7 +248,7 @@ class Executor:
         installpath=r'c:\Program Files\Safir SDK Core'
         uninstaller = installpath + r"\Uninstall.exe"
 
-        self.salt_run_shell_command('os:Windows', '"'+uninstaller+'" /S')
+        self.salt_run_shell_command('os:Windows', '"'+uninstaller+'" /S',ignore_errors=True)
 
         while True:
             res=self.salt_cmd("os:Windows", "file.directory_exists", [installpath])
