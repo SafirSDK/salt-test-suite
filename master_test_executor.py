@@ -238,49 +238,15 @@ class Executor:
         linux_end_time=time.time()
         log("    ...finished after " + str(linux_end_time - linux_start_time) + " seconds")
 
-
-        raise InternalError("exiting")
-        """
-        safir_dbg="safir-sdk-core-dbg.deb"
-        safir_tools="safir-sdk-core-tools.deb"
-        safir_test="safir-sdk-core-testsuite.deb"
-        safir_dev="safir-sdk-core-dev.deb"
-
-        self.client.cmd('os:Ubuntu', 'cmd.run',
-                                        ['rm -f safir-sdk-core.deb safir-sdk-core-dbg.deb safir-sdk-core-tools.deb safir-sdk-core-dev.deb safir-sdk-core-testsuite.deb'],
-                                        expr_form="grain")
-        self.client.cmd("os:Ubuntu", "cp.get_file",
-                                        ["salt://"+safir_core, "/home/safir/"+safir_core, "makedirs=True"],
-                                        timeout=900, #15 min
-                                        expr_form="grain")
-        #self.client.cmd("os:Ubuntu", "cp.get_file",
-        #                                ["salt://"+safir_dbg, "/home/safir/"+safir_dbg, "makedirs=True"],
-        #                                timeout=900, #15 min
-        #                                expr_form="grain")
-        self.client.cmd("os:Ubuntu", "cp.get_file",
-                                        ["salt://"+safir_tools, "/home/safir/"+safir_tools, "makedirs=True"],
-                                        timeout=900, #15 min
-                                        expr_form="grain")
-        self.client.cmd("os:Ubuntu", "cp.get_file",
-                                        ["salt://"+safir_test, "/home/safir/"+safir_test, "makedirs=True"],
-                                        timeout=900, #15 min
-                                        expr_form="grain")
-        self.client.cmd("os:Ubuntu", "cp.get_file",
-                                        ["salt://"+safir_dev, "/home/safir/"+safir_dev, "makedirs=True"],
-                                        timeout=900, #15 min
-                                        expr_form="grain")
-
-
-        """
     def windows_uninstall(self):
         log("     uninstall old Windows installation")
         installpath=r'c:\Program Files\Safir SDK Core'
         uninstaller = installpath + r"\Uninstall.exe"
 
-        self.client.cmd('os:Windows', 'cmd.run', ['"'+uninstaller+'" /S'], timeout=900, expr_form="grain")
+        self.salt_run_shell_command('os:Windows', '"'+uninstaller+'" /S')
 
         while True:
-            res=self.client.cmd("os:Windows", "file.directory_exists", [installpath], timeout=900, expr_form="grain")
+            res=self.salt_cmd("os:Windows", "file.directory_exists", [installpath])
             if True not in res.values():
                 log("  - Safir SDK Core appears to be uninstalled")
                 break
@@ -294,17 +260,15 @@ class Executor:
         win_start_time=time.time()
 
         self.windows_uninstall()
-
-        win_end_time=time.time()
         log("    ...uninstall complete after " + str(time.time() - win_start_time) + " seconds")
         log("     Copying installer")
-        self.client.cmd("os:Windows",
-                        "cp.get_file",
-                        ["salt://"+safir_win, "c:/Users/safir/"+safir_win, "makedirs=True"],
-                        timeout=1800, #30 min
-                        expr_form="grain")
+        matches = glob.glob("SafirSDKCore-*.exeb")
+        if len(matches) != 1:
+            raise InternalError("Unexpected number of exes!")
+        self.salt_get_file("os:Ubuntu", matches[0])
         log("    ...copy complete after " + str(time.time() - win_start_time) + " seconds")
 
+        raise InternalError("exiting")
         log("     Running installer")
         result = self.client.cmd('os:Windows',
                                  'cmd.run',
@@ -313,8 +277,7 @@ class Executor:
                                  expr_form="grain")
 
         log (result)
-        win_end_time=time.time()
-        log("    ...finished after " + str(win_end_time - win_start_time) + " seconds")
+        log("    ...finished after " + str(time.time() - win_start_time) + " seconds")
 
     def sync_safir(self):
         log("Install latest Safir SDK Core")
