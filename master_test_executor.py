@@ -46,6 +46,7 @@ class CommandLine:
         self.get_results=False
         self.minion_command="*"
         self.test_script_path=None
+        self.test_script=None
         for k, v in opts:
             if k=="--safir-update":
                 self.update=True
@@ -57,6 +58,7 @@ class CommandLine:
                 self.get_results=True
             elif k=="--test-script":
                 self.test_script_path=v
+                self.test_script=os.path.basename(v)
 
             else:
                 log("usage:")
@@ -175,11 +177,11 @@ class Executor:
         return result
 
     def salt_get_file(self, tgt, filename):
-        log("[Copying", filename, "to", tgt + "]")
         if not os.path.isfile(filename):
             raise InternalError("Cannot find file " + filename + " to copy!")
-        tgtname = ("c:/Users/safir/" if tgt == "os:Windows" else "/home/safir/") + filename
+        tgtname = ("c:/Users/safir/" if tgt == "os:Windows" else "/home/safir/") + os.path.basename(filename)
         srcname = "salt://" + os.path.relpath(os.path.join(os.getcwd(),filename), "/home/safir/")
+        log("[Copying", srcname, "to", tgtname, "on", tgt+ "]")
         result = self.salt_cmd(tgt,"cp.get_file", [srcname, tgtname])
         error = False
         for minion,res in result.items():
