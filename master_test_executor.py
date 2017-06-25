@@ -283,34 +283,9 @@ class Executor:
         log("Install latest Safir Core completed")
 
     def upload_test(self):
-        abspath = os.path.join(os.getcwd(), self.cmd.test_script_path)
-        log("Uploading new test script to minion:", abspath)
-
-        if not abspath.startswith("/home/safir/") or not os.path.isfile(abspath):
-            log("Uh oh! Strange script path")
-            raise InternalError("Failed to find test script")
-        saltpath = "salt://" + abspath[len("/home/safir/"):]
-        log(" - using salt path", saltpath)
-
-        while True:
-            res = self.client.cmd("os:Ubuntu", "cp.get_file",
-                                                        [saltpath, "/home/safir/"+self.cmd.test_script],
-                                                        timeout=30*60,
-                                                        expr_form="grain")
-            if len(set(res.values())) == 1:
-                log("Copy test script to ubuntu minions successful")
-                break
-            log("Copy test script to ubuntu minions failed: ", res)
-
-        while True:
-            res = self.client.cmd("os:Windows", "cp.get_file",
-                                                        [saltpath, "c:/Users/safir/"+self.cmd.test_script],
-                                                        timeout=30*60,
-                                                        expr_form="grain")
-            if len(set(res.values())) == 1:
-                log("Copy test script to windows minions successful")
-                break
-            log("Copy test script to windows minions failed: ", res)
+        log("Uploading new test script to minions:", self.cmd.test_script_path)
+        self.salt_get_file("os:Ubuntu", self.cmd.test_script)
+        self.salt_get_file("os:Windows", self.cmd.test_script)
 
     def run_test(self):
         log("Run test script on minion")
