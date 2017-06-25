@@ -46,7 +46,6 @@ class CommandLine:
         self.get_results=False
         self.minion_command="*"
         self.test_script_path=None
-        self.test_script=None
         for k, v in opts:
             if k=="--safir-update":
                 self.update=True
@@ -58,7 +57,6 @@ class CommandLine:
                 self.get_results=True
             elif k=="--test-script":
                 self.test_script_path=v
-                self.test_script=os.path.basename(v)
 
             else:
                 log("usage:")
@@ -284,8 +282,8 @@ class Executor:
 
     def upload_test(self):
         log("Uploading new test script to minions:", self.cmd.test_script_path)
-        self.salt_get_file("os:Ubuntu", self.cmd.test_script)
-        self.salt_get_file("os:Windows", self.cmd.test_script)
+        self.salt_get_file("os:Ubuntu", self.cmd.test_script_path)
+        self.salt_get_file("os:Windows", self.cmd.test_script_path)
 
     def run_test(self):
         log("Run test script on minion")
