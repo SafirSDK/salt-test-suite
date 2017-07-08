@@ -306,7 +306,7 @@ class Executor:
 
         self.client.cmd("G@os:Windows and "+self.cmd.minion_command,
                                         "cp.push",
-                                        ["c:/Users/safir/result.txt"],
+                                        ["c:\\Users\\safir\\result.txt"],
                                         expr_form="compound")
 
         self.client.cmd("G@os:Ubuntu and "+self.cmd.minion_command,
@@ -316,7 +316,7 @@ class Executor:
 
         self.client.cmd("G@os:Windows and "+self.cmd.minion_command,
                                         "cp.push",
-                                        ["c:/Users/safir/result.zip"],
+                                        ["c:\\Users\\safir\\result.zip"],
                                         expr_form="compound")
 
         result_dir="test_result"
