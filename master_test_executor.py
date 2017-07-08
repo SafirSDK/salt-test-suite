@@ -293,9 +293,9 @@ class Executor:
         node_count=str(len(self.minions))
 
         self.cmd_iter = self.client.cmd_iter(self.cmd.minion_command,
-                                                 "cmd.run",
-                                                 ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                                 expr_form="compound")
+                                             "cmd.run",
+                                             ["python " + self.cmd.test_script_path + " --node-count "+node_count],
+                                             expr_form="compound")
 
     def collect_result(self):
         log("Collecting result files from minions")
