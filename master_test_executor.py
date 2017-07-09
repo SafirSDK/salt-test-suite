@@ -287,21 +287,11 @@ class Executor:
 
         node_count=str(len(self.minions))
 
-        cmd_iter = chain \
-           (self.client.cmd_iter_no_block("os:Ubuntu",
-                                          "cmd.run",
-                                          ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                          kwarg={"cwd" : "/home/safir"},
-                                          expr_form="grain"),
-            self.client.cmd_iter_no_block("os:Windows",
-                                          "cmd.run",
-                                          ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                          kwarg={"cwd" : "c:\\Users\\safir\\"},
-                                          expr_form="grain"))
-        log("Waiting for results from minions")
-        while None in cmd_iter:
-            time.sleep(1)
-        return cmd_iter
+        it = self.client.cmd_iter("*",
+                                  "cmd.run",
+                                  ["python " + self.cmd.test_script + " --node-count "+node_count],
+                                  expr_form="grain")
+        return it
 
     def collect_result(self):
         log("Collecting result files from minions")
@@ -375,7 +365,7 @@ class Executor:
         res = self.run_test()
 
         minionResults = dict()
-
+        log("Waiting for results from minions")
         for r in res:
             minionResults.update(r)
 
