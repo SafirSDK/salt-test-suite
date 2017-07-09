@@ -76,7 +76,7 @@ if len(revisions) != 1:
 
 log("Killing test exes on minions")
 subprocess.call(("salt", "-N", "linux", "cmd.run",
-                '"killall -9 system_picture_component_test_node communication_test system_picture_listener"'))
+                '"killall -q -9 system_picture_component_test_node communication_test system_picture_listener"'))
 subprocess.call(("salt", "-N" ,"win", "cmd.run",
                 '"taskkill /f /im communication_test.exe"'))
 subprocess.call(("salt", "-N" ,"win", "cmd.run",

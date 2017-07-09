@@ -39,7 +39,7 @@ class InternalError (Exception):
 #-----------------------------------------------------
 class CommandLine:
     def __init__(self):
-        opts, args = getopt.getopt(sys.argv[1:], "h:", ["test-script=", "safir-update", "clear-only", "get-logs", "get-results", "help"])
+        opts, _args = getopt.getopt(sys.argv[1:], "h:", ["test-script=", "safir-update", "clear-only", "get-logs", "get-results", "help"])
         self.minion_command="*"
         self.update=False
         self.clear_only=False
@@ -146,7 +146,7 @@ class Executor:
 
             file_found=False
             src_dir=os.path.join("/var/cache/salt/master/minions", m)
-            for root, folders, files in os.walk(src_dir):
+            for root, _folders, files in os.walk(src_dir):
                 for f in files:
                     if f.endswith("log.zip"):
                         src_file=os.path.join(root, f)
@@ -287,16 +287,21 @@ class Executor:
 
         node_count=str(len(self.minions))
 
-        self.cmd_iter = chain(self.client.cmd_iter("os:Ubuntu",
-                                                   "cmd.run",
-                                                   ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                                   kwarg={"cwd" : "/home/safir"},
-                                                   expr_form="grain"),
-                              self.client.cmd_iter("os:Windows",
-                                                   "cmd.run",
-                                                   ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                                   kwarg={"cwd" : "c:\\Users\\safir\\"},
-                                                   expr_form="grain"))
+        cmd_iter = chain \
+           (self.client.cmd_iter_no_block("os:Ubuntu",
+                                          "cmd.run",
+                                          ["python " + self.cmd.test_script + " --node-count "+node_count],
+                                          kwarg={"cwd" : "/home/safir"},
+                                          expr_form="grain"),
+            self.client.cmd_iter_no_block("os:Windows",
+                                          "cmd.run",
+                                          ["python " + self.cmd.test_script + " --node-count "+node_count],
+                                          kwarg={"cwd" : "c:\\Users\\safir\\"},
+                                          expr_form="grain"))
+        log("Waiting for results from minions")
+        while None in cmd_iter:
+            time.sleep(1)
+        return cmd_iter
 
     def collect_result(self):
         log("Collecting result files from minions")
@@ -328,7 +333,7 @@ class Executor:
         for m in self.minions:
             file_found=False
             src_dir=os.path.join("/var/cache/salt/master/minions", m)
-            for root, folders, files in os.walk(src_dir):
+            for root, _folders, files in os.walk(src_dir):
                 for f in files:
                     if f.endswith("result.txt"):
                         src_file=os.path.join(root, f)
@@ -367,11 +372,11 @@ class Executor:
 
 
         self.upload_test()
-        self.run_test()
+        res = self.run_test()
 
         minionResults = dict()
-        log("Waiting for results from minions")
-        for r in self.cmd_iter:
+
+        for r in res:
             minionResults.update(r)
 
         aggregateResult = True
