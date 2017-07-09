@@ -41,22 +41,43 @@ def run_command(cmd):
         sys.exit(1)
     return _output
 
-
+#check running nodes
 output = run_command(("salt-run","-t","20","manage.down"))
-
 log(output)
 if output.find("minion") != -1:
     log ("At least one node is down!")
     sys.exit(1)
 
-output = run_command(("salt", "--out=json", "*", "cmd.run", "safir_show_config --revision"))
+#check user runnning salt
+output = run_command(("salt", "--static", "--out=json", "*", "cmd.run", "whoami"))
+for minion,s in json.loads(output).items():
+    if s != "safir" and s != minion + "\\safir":
+        log(minion, "is not running as correct user. Expected safir or",
+            minion+"\\safir", "but got", s)
+        sys.exit(1)
+
+#check home directory on linux
+output = run_command(("salt", "--static", "--out=json", "-N", "linux", "cmd.run", "pwd"))
+for minion,s in json.loads(output).items():
+    if s != "/home/safir":
+        log(minion, "is not running in correct dir. Got", s)
+        sys.exit(1)
+
+#check home directory on windows
+output = run_command(("salt", "--static", "--out=json", "-N", "win", "cmd.run", "cd"))
+for minion,s in json.loads(output).items():
+    if s != "C:\\Users\\safir":
+        log(minion, "is not running in correct dir. Got", s)
+        sys.exit(1)
+
+#Check Safir SDK Core version
+output = run_command(("salt", "--static", "--out=json", "*", "cmd.run", "safir_show_config --revision"))
 
 #due to bugs in salt I had to remove --static above, and fake all the output into a
 #single json object like this. If --static starts working again it should just be a
 #matter of readding it above and removing these two lines.
-output = "{" + output.replace("\n}",",").replace("{","") + "}"
-output = output.replace(",\n}","\n}")
-
+#output = "{" + output.replace("\n}",",").replace("{","") + "}"
+#output = output.replace(",\n}","\n}")
 
 pattern = re.compile(r"Safir SDK Core Git revision: (.*)")
 
