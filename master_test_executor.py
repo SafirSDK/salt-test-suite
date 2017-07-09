@@ -27,7 +27,7 @@ from __future__ import print_function
 import os, subprocess, sys, getopt, time, shutil, glob
 import salt.client
 import salt.utils.event
-
+from itertools import chain
 def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
@@ -44,7 +44,6 @@ class CommandLine:
         self.clear_only=False
         self.get_logs=False
         self.get_results=False
-        self.minion_command="*"
         self.test_script_path=None
         self.test_script=None
         for k, v in opts:
@@ -68,11 +67,6 @@ class CommandLine:
                 log("    collect log files: master_test_executor --get-logs")
                 log("    collect all result files: master_test_executor --get-results")
                 sys.exit(1)
-
-        if len(args)>0:
-            self.minion_command=args[0]
-            for a in args[1:]:
-                self.minion_command=self.minion_command+" "+a
 
 #-----------------------------------------------------
 # Execute test
@@ -292,10 +286,16 @@ class Executor:
 
         node_count=str(len(self.minions))
 
-        self.cmd_iter = self.client.cmd_iter(self.cmd.minion_command,
-                                             "cmd.run",
-                                             ["python " + self.cmd.test_script_path + " --node-count "+node_count],
-                                             expr_form="compound")
+        self.cmd_iter = chain(self.client.cmd_iter("os:Ubuntu",
+                                                   "cmd.run",
+                                                   ["python " + self.cmd.test_script + " --node-count "+node_count],
+                                                   cwd="/home/safir",
+                                                   expr_form="grain"),
+                              self.client.cmd_iter("os:Windows",
+                                                   "cmd.run",
+                                                   cwd="c:\\Users\\safir\\",
+                                                   ["python " + self.cmd.test_script + " --node-count "+node_count],
+                                                   expr_form="grain"))
 
     def collect_result(self):
         log("Collecting result files from minions")
