@@ -41,44 +41,42 @@ def run_command(cmd):
         sys.exit(1)
     return _output
 
-#check running nodes
+log("### Check that all nodes are running ###")
 output = run_command(("salt-run","-t","20","manage.down"))
 log(output)
 if output.find("minion") != -1:
     log ("At least one node is down!")
     sys.exit(1)
 
-#check user runnning salt
+log("### Check that all nodes are running as safir user ###")
 output = run_command(("salt", "--static", "--out=json", "*", "cmd.run", "whoami"))
+log(output)
 for minion,s in json.loads(output).items():
     if s != "safir" and s != minion + "\\safir":
         log(minion, "is not running as correct user. Expected safir or",
             minion+"\\safir", "but got", s)
         sys.exit(1)
 
-#check home directory on linux
+log("### Check default directory on Linux ###")
 output = run_command(("salt", "--static", "--out=json", "-N", "linux", "cmd.run", "pwd"))
+log(output)
 for minion,s in json.loads(output).items():
     if s != "/home/safir":
         log(minion, "is not running in correct dir. Got", s)
         sys.exit(1)
 
 #check home directory on windows
+log("### Check default directory on Windows ###")
 output = run_command(("salt", "--static", "--out=json", "-N", "win", "cmd.run", "cd"))
+log(output)
 for minion,s in json.loads(output).items():
     if s != "C:\\Users\\safir":
         log(minion, "is not running in correct dir. Got", s)
         sys.exit(1)
 
-#Check Safir SDK Core version
+log("### Check Safir SDK Core version ###")
 output = run_command(("salt", "--static", "--out=json", "*", "cmd.run", "safir_show_config --revision"))
-
-#due to bugs in salt I had to remove --static above, and fake all the output into a
-#single json object like this. If --static starts working again it should just be a
-#matter of readding it above and removing these two lines.
-#output = "{" + output.replace("\n}",",").replace("{","") + "}"
-#output = output.replace(",\n}","\n}")
-
+log(output)
 pattern = re.compile(r"Safir SDK Core Git revision: (.*)")
 
 revisions = set()
@@ -95,7 +93,7 @@ if len(revisions) != 1:
     log("revisions differ between minions")
     sys.exit(1)
 
-log("Killing test exes on minions")
+log("### Killing test exes on minions ###")
 subprocess.call(("salt", "-N", "linux", "cmd.run",
                 '"killall -q -9 system_picture_component_test_node communication_test system_picture_listener"'))
 subprocess.call(("salt", "-N" ,"win", "cmd.run",
