@@ -293,8 +293,8 @@ class Executor:
                                                    expr_form="grain"),
                               self.client.cmd_iter("os:Windows",
                                                    "cmd.run",
-                                                   cwd="c:\\Users\\safir\\",
                                                    ["python " + self.cmd.test_script + " --node-count "+node_count],
+                                                   cwd="c:\\Users\\safir\\",
                                                    expr_form="grain"))
 
     def collect_result(self):
