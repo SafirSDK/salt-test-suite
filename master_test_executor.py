@@ -289,8 +289,7 @@ class Executor:
 
         it = self.client.cmd_iter("*",
                                   "cmd.run",
-                                  ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                  expr_form="grain")
+                                  ["python " + self.cmd.test_script + " --node-count "+node_count])
         return it
 
     def collect_result(self):
