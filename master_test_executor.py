@@ -290,12 +290,12 @@ class Executor:
         self.cmd_iter = chain(self.client.cmd_iter("os:Ubuntu",
                                                    "cmd.run",
                                                    ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                                   cwd="/home/safir",
+                                                   kwarg={"cwd" : "/home/safir"},
                                                    expr_form="grain"),
                               self.client.cmd_iter("os:Windows",
                                                    "cmd.run",
                                                    ["python " + self.cmd.test_script + " --node-count "+node_count],
-                                                   cwd="c:\\Users\\safir\\",
+                                                   kwarg={"cwd" : "c:\\Users\\safir\\"},
                                                    expr_form="grain"))
 
     def collect_result(self):
