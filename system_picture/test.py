@@ -28,7 +28,7 @@ import subprocess, sys, re, socket, os, shutil, time
 
 NODES_PER_COMPUTER = 1
 #COMPUTERS=[10,11,12,13,14,15,16,17,18,19]
-COMPUTERS=reversed(range(20))
+COMPUTERS=list(reversed(range(20)))
 REVOLUTIONS = 3
 
 def log(*args, **kwargs):
