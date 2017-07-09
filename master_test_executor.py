@@ -40,6 +40,7 @@ class InternalError (Exception):
 class CommandLine:
     def __init__(self):
         opts, args = getopt.getopt(sys.argv[1:], "h:", ["test-script=", "safir-update", "clear-only", "get-logs", "get-results", "help"])
+        self.minion_command="*"
         self.update=False
         self.clear_only=False
         self.get_logs=False
