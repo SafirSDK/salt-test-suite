@@ -26,9 +26,9 @@
 from __future__ import print_function
 import subprocess, sys, re, socket, os, shutil, time
 
-NODES_PER_COMPUTER = 1
+NODES_PER_COMPUTER = 2
 #COMPUTERS=[10,11,12,13,14,15,16,17,18,19]
-COMPUTERS=list(reversed(range(20)))
+COMPUTERS=list(range(20))
 REVOLUTIONS = 3
 
 def log(*args, **kwargs):
