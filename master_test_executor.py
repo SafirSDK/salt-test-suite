@@ -255,14 +255,14 @@ class Executor:
         log("=== Update Windows minions")
         start_time=time.time()
 
-        log("Uninstall old Windows installation")
-        self.windows_uninstall()
-
         log("Copying installer")
         matches = glob.glob("SafirSDKCore-*.exe")
         if len(matches) != 1:
             raise InternalError("Unexpected number of exes!")
         self.salt_get_file("os:Windows", matches[0])
+
+        log("Uninstall old Windows installation")
+        self.windows_uninstall()
 
         log("Running installer")
         #Add /NODEVELOPMENT before testsuite to skip dev
