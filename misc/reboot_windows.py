@@ -38,7 +38,9 @@ if output.find("minion1") != -1:
 else:
     log ("All windows nodes appear to be up. Will reboot them!")
 
-subprocess.check_output(("salt", "-N", "win", "system.reboot"))
+log("Running salt -N win system.reboot")
+output = subprocess.check_output(("salt", "-N", "win", "system.reboot"))
+log("Output:", output)
 
 #first wait for all windows nodes to go away
 needed = set(["minion10","minion11","minion12","minion13","minion14","minion15","minion16","minion17","minion18","minion19"])
